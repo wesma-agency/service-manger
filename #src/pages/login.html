@@ -1,0 +1,33 @@
+@@include("../components/_header.html")
+<section class="login">
+  <div class="container">
+    <div class="login__wrap">
+      <div class="login__logo">
+        <img src="./img/logo-wesma.svg" alt="">
+      </div>
+
+      <div class="login__title title-h1">Сервисы для менеджеров</div>
+
+      <form v-on:submit.prevent="onSubmit" class="login__form form-login">
+
+        <div class="form-login__list">
+          <div class="form-login__wrap-input wrap-input">
+            <input type="text" placeholder="Логин" v-model="login">
+          </div>
+
+          <div class="form-login__wrap-input wrap-input">
+            <input type="password" placeholder="Пароль" v-model="pass">
+          </div>
+        </div>
+
+        <button class="form-login__btn main-btn" type="submit"><span>Войти</span></button>
+      </form>
+
+      <div class="login__copy">Copyright © 2016 – 2022 ООО «WESMA»</div>
+    </div>
+  </div>
+</section>
+
+<script defer src="./js/page/login.js"></script>
+
+@@include("../components/_footer.html")
