@@ -5,20 +5,22 @@
     @@include("../components/_main-menu.html")
 
     <div class="main-section">
+
+        <div class="title-h2">Мои проекты</div>
+
+        <div class="breadcrumbs">
+            <ul class="breadcrumbs__list">
+                <li class="breadcrumbs__item">
+                    <a href="#">Домашняя страница</a>
+                </li>
+
+                <li class="breadcrumbs__item">
+                    <span>Мои проекты</span>
+                </li>
+            </ul>
+        </div>
+
         <section class="all-projects">
-            <div class="all-projects__title title-h2">Мои проекты</div>
-
-            <div class="breadcrumbs">
-                <ul class="breadcrumbs__list">
-                    <li class="breadcrumbs__item">
-                        <a href="#">Домашняя страница</a>
-                    </li>
-
-                    <li class="breadcrumbs__item">
-                        <span>Мои проекты</span>
-                    </li>
-                </ul>
-            </div>
 
             <div class="all-projects__group">
                 <a href="#" class="all-projects__create-project main-btn">Создать проект</a>
@@ -75,7 +77,7 @@
                         </div>
 
                         <div class="card-projects__column">
-                            <div class="card-projects__enable">
+                            <div class="card-projects__enable" v-on:click="projectEnable">
                                 <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"
                                     version="1.1" width="30px" height="30px">
                                     <g transform="matrix(1 0 0 1 -1765 -224 )">
@@ -89,7 +91,7 @@
                         </div>
                     </div>
                     <div class="card-projects__setting setting">
-                        <div class="setting__icon">
+                        <div class="setting__icon" v-on:click="toggleSetting">
                             <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"
                                 version="1.1" width="15px" height="15px">
                                 <defs>
@@ -117,11 +119,11 @@
                         </div>
 
                         <div class="setting__list">
-                            <div class="setting__item">Редактировать</div>
-                            <div class="setting__item">Завершить</div>
-                            <div class="setting__item">Копировать</div>
-                            <div class="setting__item">Передать</div>
-                            <div class="setting__item">Удалить</div>
+                            <div class="setting__item"><a href="#">Редактировать</a></div>
+                            <div class="setting__item" v-on:click="projectEnd">Завершить</div>
+                            <div class="setting__item" v-on:click="projectCopy">Копировать</div>
+                            <div class="setting__item" v-on:click="projectRefer">Передать</div>
+                            <div class="setting__item" v-on:click="projectDelete">Удалить</div>
                         </div>
                     </div>
                 </div>
@@ -175,7 +177,7 @@
                         </div>
 
                         <div class="card-projects__column">
-                            <div class="card-projects__enable --disabled">
+                            <div class="card-projects__enable --disabled" v-on:click="projectEnable">
                                 <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"
                                     version="1.1" width="30px" height="30px">
                                     <g transform="matrix(1 0 0 1 -1765 -224 )">
@@ -189,7 +191,7 @@
                         </div>
                     </div>
                     <div class="card-projects__setting setting">
-                        <div class="setting__icon">
+                        <div class="setting__icon" v-on:click="toggleSetting">
                             <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"
                                 version="1.1" width="15px" height="15px">
                                 <defs>
@@ -217,11 +219,11 @@
                         </div>
 
                         <div class="setting__list">
-                            <div class="setting__item">Редактировать</div>
-                            <div class="setting__item">Завершить</div>
-                            <div class="setting__item">Копировать</div>
-                            <div class="setting__item">Передать</div>
-                            <div class="setting__item">Удалить</div>
+                            <div class="setting__item"><a href="#">Редактировать</a></div>
+                            <div class="setting__item" v-on:click="projectEnd">Завершить</div>
+                            <div class="setting__item" v-on:click="projectCopy">Копировать</div>
+                            <div class="setting__item" v-on:click="projectRefer">Передать</div>
+                            <div class="setting__item" v-on:click="projectDelete">Удалить</div>
                         </div>
                     </div>
                 </div>
@@ -231,7 +233,8 @@
 
 </div>
 
-<script defer src="./js/components/filters-project.js"></script> -->
+<script defer src="./js/components/filters-project.js"></script>
+<script defer src="./js/components/card-project.js"></script>
 <script defer src="./js/page/project-all.js"></script>
 
 @@include("../components/_footer.html")

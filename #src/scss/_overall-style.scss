@@ -37,6 +37,13 @@ body.lock {
 	font-weight: bold;
 }
 
+.title-h3 {
+	font-size: 24px;
+	line-height: 120%;
+	color: #000;
+	font-weight: bold;
+}
+
 .wrap-input {
 	& input {
 		width: 100%;
@@ -79,6 +86,21 @@ body.lock {
 	&:hover {
 		background: #1d6e55;
 	}
+	&.--gray {
+		color: #8087A7;
+		background: rgba(233, 235, 247, 1);
+		&:hover {
+			background: rgb(176, 178, 187);
+			color: #fff;
+		}
+	}	
+
+	&.--red {
+		background: #AF5151;
+		&:hover {
+			background: #6d3232;
+		}
+	}
 }
 
 .content-wrap {
@@ -89,6 +111,14 @@ body.lock {
 .main-section {
 	width: 100%;
 	padding: 35px;
+
+	& .title-h2 {
+		margin-bottom: 10px;
+	}
+
+	& .breadcrumbs {
+        margin-bottom: 30px;
+    }
 }
 
 .breadcrumbs {
@@ -131,4 +161,20 @@ body.lock {
 	border-radius: 20px;
 	text-align: center;
 	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.14);
+}
+
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s ease;
+}
+  
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+
+@media (max-width: 1350px) {
+	.main-btn {
+		padding: 8px;
+		font-size: 14px;
+	}
 }

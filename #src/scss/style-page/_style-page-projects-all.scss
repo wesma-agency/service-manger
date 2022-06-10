@@ -1,13 +1,5 @@
 .all-projects {
 
-    &__title {
-        margin-bottom: 10px;
-    }
-
-    & .breadcrumbs {
-        margin-bottom: 30px;
-    }
-
     &__group {
         display: flex;
         align-items: center;
@@ -122,7 +114,7 @@
 
     &__row {
         display: grid;
-        grid-template-columns: 0.6fr auto 0.6fr 0.6fr 1fr auto;
+        grid-template-columns: 0.6fr auto 0.6fr 0.6fr 1fr min-content;
         gap: 45px;
         align-items: center;
         padding-right: 75px;
@@ -162,6 +154,8 @@
 
     &__option {
         display: flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
         &:not(:last-child) {
             margin-bottom: 10px;
         }
@@ -206,13 +200,11 @@
 }
 
 .setting {
-
     &__icon {
         cursor: pointer;
     }
 
     &__list {
-        display: none;
         min-width: 200px;
         max-height: 160px;
         overflow: auto;
@@ -226,12 +218,26 @@
         color: #000;
         background: #fff;
         z-index: 10;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    &.show {
+        & .setting__list {
+            opacity: 1;
+            visibility: visible;
+        }
     }
 
     &__item {
         cursor: pointer;
         padding: 4px 2px;
         transition: all 0.3s ease;
+
+        & a {
+            color: #000;
+        }
         
         &:hover {
             color: #fff;
@@ -240,10 +246,86 @@
     }
 }
 
-.fade-enter-active, .fade-leave-active {
-    transition: opacity .5s ease;
+
+@media (max-width: 1900px) {
+    .card-projects {
+        &__row {
+            padding-right: 30px;
+            grid-template-columns: 0.4fr auto 0.5fr 0.5fr 0.7fr min-content;
+        }
+
+        &__btn {
+            &:not(:last-child) {
+                margin-right: 20px;
+            }
+        }
+    }
 }
-  
-.fade-enter-from, .fade-leave-to {
-    opacity: 0;
+
+@media (max-width: 1700px) {
+    .card-projects {
+        &__row {
+            gap: 25px;
+            grid-template-columns: 0.4fr auto 0.5fr 0.5fr 0.5fr min-content;
+        }
+    }
+}
+
+@media (min-width: 1350px) and (max-width: 1700px) {
+    .card-projects {
+        &__column {
+            &:nth-child(2) {
+                flex-direction: column;
+            }
+        }
+
+        &__btn {
+            &:not(:last-child) {
+                margin-right: 0px;
+                margin-bottom: 20px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1350px) {
+    .all-projects {
+        &__create-project {
+            max-width: 190px;
+        }
+    }
+
+    .card-projects {
+        &__row {
+            grid-template-columns: 0.6fr 1fr 0.7fr;
+            padding-right: 15px;
+        }
+
+        &__column {
+            &:nth-child(1) {
+                order: 1;
+            }
+
+            &:nth-child(2) {
+                order: 5;
+            }
+
+            &:nth-child(3) {
+                order: 3;
+            }
+
+            &:nth-child(4) {
+                order: 4;
+            }
+
+            &:nth-child(5) {
+                order: 2;
+            }
+
+            &:nth-child(6) {
+                order: 6;
+                text-align: end;
+            }
+        }
+    }
 }
