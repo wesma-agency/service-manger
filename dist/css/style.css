@@ -874,8 +874,10 @@ body.lock {
 .create-project__global {
   margin-bottom: 40px; }
 
+.create-project__stage {
+  margin-bottom: 30px; }
+
 .create-project__add-stage {
-  margin-top: 30px;
   max-width: 160px; }
 
 .global-param__row {
@@ -949,22 +951,32 @@ body.lock {
   line-height: 120%;
   color: #8087A7; }
 
-.field-item__text {
+.field-item__wrap-text {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  border: 1px solid #E9EBF7;
   min-height: 35px;
   border-radius: 20px;
-  padding: 5px 15px;
-  border: 1px solid #E9EBF7; }
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease; }
 
-.field-item.--link .field-item__text {
+.field-item__text {
+  padding: 5px 15px;
+  width: 100%;
+  background: none;
+  font-size: 13px;
+  line-height: 120%;
+  color: #000; }
+
+.field-item.--link .field-item__wrap-text {
   position: relative;
   padding-right: 40px; }
-  .field-item.--link .field-item__text::before {
+  .field-item.--link .field-item__wrap-text::before {
     content: "";
     position: absolute;
     top: 50%;
@@ -979,6 +991,9 @@ body.lock {
             box-shadow: 0 3px 3px rgba(0, 0, 0, 0.14);
     background: url("../img/icon-link.svg") no-repeat center/19px 18px, #fff;
     z-index: 5; }
+
+.field-item.--isEdits .field-item__wrap-text {
+  border-color: #51AF92; }
 
 .hint {
   position: relative;
@@ -1363,6 +1378,16 @@ body.lock {
       color: #8087A7; }
   .field-calc__hint {
     margin-left: 10px; }
+  .field-calc__wrap-value {
+    min-height: 23px; }
+  .field-calc__value {
+    font-size: 13px;
+    line-height: 120%;
+    color: #333333;
+    text-align: right;
+    background: none; }
+  .field-calc.--isEdits {
+    border-color: #51AF92; }
   .field-calc.--green .field-calc__value {
     font-weight: bold;
     color: #51AF92; }
