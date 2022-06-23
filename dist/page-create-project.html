@@ -394,7 +394,7 @@
                     <div class="global-param__column">
 
                         <comp-global-param :objfield="itemProject.globalParam"
-                            v-on:change-global-param="handlerGlobParam">
+                            v-on:event-change-field="editsFieldGlobal">
                         </comp-global-param>
 
                     </div>
@@ -404,39 +404,12 @@
                             <div class="card-action__title title-h3">Действия</div>
 
                             <div class="card-action__list">
-                                <div class="card-action__field field-select">
-                                    <div class="field-select__name">Активный этап</div>
 
-                                    <div class="field-select__wrap select-item">
-                                        <div class="select-item__name"><span>Верстка</span></div>
+                                <comp-actvie-stage :objconfig="itemProject.stageParam"
+                                    v-on:event-change-active-stage="changeActiveStage"></comp-actvie-stage>
 
-                                        <div class="select-item__list">
-                                            <div class="select-item__item">Прототипирование</div>
-                                            <div class="select-item__item">Дизайн</div>
-                                            <div class="select-item__item">Программирование</div>
-                                            <div class="select-item__item">Тестирование</div>
-                                            <div class="select-item__item">Дополнительные работы</div>
-                                            <div class="select-item__item">Наполнение (контент)</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card-action__field field-select">
-                                    <div class="field-select__name">Менеджер</div>
-
-                                    <div class="field-select__wrap select-item">
-                                        <div class="select-item__name"><span>Менеджер 1</span></div>
-
-                                        <div class="select-item__list">
-                                            <div class="select-item__item">Менеджер 1</div>
-                                            <div class="select-item__item">Менеджер 2</div>
-                                            <div class="select-item__item">Менеджер 3</div>
-                                            <div class="select-item__item">Менеджер 4</div>
-                                            <div class="select-item__item">Менеджер 5</div>
-                                            <div class="select-item__item">Менеджер 6</div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <comp-actvie-manager :objconfig="itemProject.managerList"
+                                    v-on:event-change-active-manager="changeActiveManager"></comp-actvie-manager>
                             </div>
 
                             <div class="card-action__isactive">Проект активен</div>
@@ -452,11 +425,14 @@
 
             </div>
 
-            <comp-stage v-for="(item, name, index) in itemProject.stageParam" v-on:change-user-arr="handlerUserParam"
-                :objconfig="item">
+            <comp-stage v-for="(item, name, index) in itemProject.stageParam" :key="item.stageId"
+                v-on:event-change-user-name="changeUserParam" v-on:event-change-field="editsFieldStage"
+                v-on:event-move-stage="changeMoveStage" v-on:event-delete-stage="changeDeleteStage"
+                v-on:event-change-namge-stage="changeNameStage" v-on:event-add-user="addUser"
+                v-on:event-delete-user="deleteUser" :objconfig="item">
             </comp-stage>
 
-            <div class="create-project__add-stage main-btn">Добавить этап</div>
+            <div class="create-project__add-stage main-btn" v-on:click="addStage">Добавить этап</div>
         </section>
     </div>
 
