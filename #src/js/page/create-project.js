@@ -594,7 +594,7 @@ const project = Vue.createApp({
 									"hours-laid": {
 										nameField: "Часов заложено",
 										valueField: "112",
-										hintField: "13123",
+										hintField: "Количество заложенных на задачу часов",
 									},
 
 									"link-b24": {
@@ -605,7 +605,7 @@ const project = Vue.createApp({
 									"fact-clock": {
 										nameField: "Факт часов",
 										valueField: "80.5",
-										hintField: "13123",
+										hintField: "Кол-во рабочих часов, по факту затраченных",
 									},
 
 									"external-bid": {
@@ -617,27 +617,27 @@ const project = Vue.createApp({
 								calcField: {
 									"working-days": {
 										nameField: "Рабочих дней",
-										valueField: "14,71428571",
-										hintField: "13123",
+										valueField: "",
+										hintField: "Кол-во рабочих часов, по факту затраченных",
 									},
 
 									"paid-client": {
 										nameField: "Оплачено клиентом",
-										valueField: "185 400",
-										hintField: "13123",
+										valueField: "",
+										hintField: "Сумма оплаченная по договору",
 									},
 
 									"shipment-external": {
 										nameField: "Отгрузка (внешняя)",
-										valueField: "140 230",
-										hintField: "13123",
+										valueField: "",
+										hintField: "Отгружено по фактическим часам",
 										isTrueEdits: true,
 										green: true,
 									},
 
 									difference: {
 										nameField: "Разница оплотгруж",
-										valueField: "45170",
+										valueField: "",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -646,35 +646,35 @@ const project = Vue.createApp({
 								expensesField: {
 									expenses: {
 										nameField: "Затраты",
-										valueField: "46 818",
-										hintField: "13123",
+										valueField: "",
+										hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
 									},
 
 									taxation: {
 										nameField: "Налог",
-										valueField: "27 810",
-										hintField: "13123",
+										valueField: "",
+										hintField: "Налоги государству с прибыли",
 									},
 
 									office: {
 										nameField: "Офис",
-										valueField: "18727,27273",
-										hintField: "13123",
+										valueField: "",
+										hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
 										isTrueEdits: true,
 										green: true,
 									},
 
 									"payment-sales": {
 										nameField: "Выплата сейлзу",
-										valueField: "18 540",
+										valueField: "",
 										isTrueEdits: true,
 										green: true,
 									},
 
 									"all-costs": {
 										nameField: "Всех затрат",
-										valueField: "111 895",
-										hintField: "13123",
+										valueField: "",
+										hintField: "Всего затрат без менеджмента",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -692,7 +692,7 @@ const project = Vue.createApp({
 									"hours-laid": {
 										nameField: "Часов заложено",
 										valueField: "112",
-										hintField: "13123",
+										hintField: "Количество заложенных на задачу часов",
 									},
 
 									"link-b24": {
@@ -703,7 +703,7 @@ const project = Vue.createApp({
 									"fact-clock": {
 										nameField: "Факт часов",
 										valueField: "80.5",
-										hintField: "13123",
+										hintField: "Кол-во рабочих часов, по факту затраченных",
 									},
 
 									"external-bid": {
@@ -716,19 +716,19 @@ const project = Vue.createApp({
 									"working-days": {
 										nameField: "Рабочих дней",
 										valueField: "14,71428571",
-										hintField: "13123",
+										hintField: "Кол-во рабочих часов, по факту затраченных",
 									},
 
 									"paid-client": {
 										nameField: "Оплачено клиентом",
 										valueField: "185 400",
-										hintField: "13123",
+										hintField: "Сумма оплаченная по договору",
 									},
 
 									"shipment-external": {
 										nameField: "Отгрузка (внешняя)",
 										valueField: "140 230",
-										hintField: "13123",
+										hintField: "Отгружено по фактическим часам",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -745,19 +745,19 @@ const project = Vue.createApp({
 									expenses: {
 										nameField: "Затраты",
 										valueField: "46 818",
-										hintField: "13123",
+										hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
 									},
 
 									taxation: {
 										nameField: "Налог",
 										valueField: "27 810",
-										hintField: "13123",
+										hintField: "Налоги государству с прибыли",
 									},
 
 									office: {
 										nameField: "Офис",
 										valueField: "18727,27273",
-										hintField: "13123",
+										hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -772,7 +772,7 @@ const project = Vue.createApp({
 									"all-costs": {
 										nameField: "Всех затрат",
 										valueField: "111 895",
-										hintField: "13123",
+										hintField: "Всего затрат без менеджмента",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -802,7 +802,7 @@ const project = Vue.createApp({
 									"hours-laid": {
 										nameField: "Часов заложено",
 										valueField: "112",
-										hintField: "13123",
+										hintField: "Количество заложенных на задачу часов",
 									},
 
 									"link-b24": {
@@ -813,7 +813,7 @@ const project = Vue.createApp({
 									"fact-clock": {
 										nameField: "Факт часов",
 										valueField: "80.5",
-										hintField: "13123",
+										hintField: "Кол-во рабочих часов, по факту затраченных",
 									},
 
 									"external-bid": {
@@ -826,19 +826,19 @@ const project = Vue.createApp({
 									"working-days": {
 										nameField: "Рабочих дней",
 										valueField: "14,71428571",
-										hintField: "13123",
+										hintField: "Кол-во рабочих часов, по факту затраченных",
 									},
 
 									"paid-client": {
 										nameField: "Оплачено клиентом",
 										valueField: "185 400",
-										hintField: "13123",
+										hintField: "Сумма оплаченная по договору",
 									},
 
 									"shipment-external": {
 										nameField: "Отгрузка (внешняя)",
 										valueField: "140 230",
-										hintField: "13123",
+										hintField: "Отгружено по фактическим часам",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -855,19 +855,19 @@ const project = Vue.createApp({
 									expenses: {
 										nameField: "Затраты",
 										valueField: "46 818",
-										hintField: "13123",
+										hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
 									},
 
 									taxation: {
 										nameField: "Налог",
 										valueField: "27 810",
-										hintField: "13123",
+										hintField: "Налоги государству с прибыли",
 									},
 
 									office: {
 										nameField: "Офис",
 										valueField: "18727,27273",
-										hintField: "13123",
+										hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -882,7 +882,7 @@ const project = Vue.createApp({
 									"all-costs": {
 										nameField: "Всех затрат",
 										valueField: "111 895",
-										hintField: "13123",
+										hintField: "Всего затрат без менеджмента",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -900,7 +900,7 @@ const project = Vue.createApp({
 									"hours-laid": {
 										nameField: "Часов заложено",
 										valueField: "112",
-										hintField: "13123",
+										hintField: "Количество заложенных на задачу часов",
 									},
 
 									"link-b24": {
@@ -911,7 +911,7 @@ const project = Vue.createApp({
 									"fact-clock": {
 										nameField: "Факт часов",
 										valueField: "80.5",
-										hintField: "13123",
+										hintField: "Кол-во рабочих часов, по факту затраченных",
 									},
 
 									"external-bid": {
@@ -924,19 +924,19 @@ const project = Vue.createApp({
 									"working-days": {
 										nameField: "Рабочих дней",
 										valueField: "14,71428571",
-										hintField: "13123",
+										hintField: "Кол-во рабочих часов, по факту затраченных",
 									},
 
 									"paid-client": {
 										nameField: "Оплачено клиентом",
 										valueField: "185 400",
-										hintField: "13123",
+										hintField: "Сумма оплаченная по договору",
 									},
 
 									"shipment-external": {
 										nameField: "Отгрузка (внешняя)",
 										valueField: "140 230",
-										hintField: "13123",
+										hintField: "Отгружено по фактическим часам",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -953,19 +953,19 @@ const project = Vue.createApp({
 									expenses: {
 										nameField: "Затраты",
 										valueField: "46 818",
-										hintField: "13123",
+										hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
 									},
 
 									taxation: {
 										nameField: "Налог",
 										valueField: "27 810",
-										hintField: "13123",
+										hintField: "Налоги государству с прибыли",
 									},
 
 									office: {
 										nameField: "Офис",
 										valueField: "18727,27273",
-										hintField: "13123",
+										hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -980,7 +980,7 @@ const project = Vue.createApp({
 									"all-costs": {
 										nameField: "Всех затрат",
 										valueField: "111 895",
-										hintField: "13123",
+										hintField: "Всего затрат без менеджмента",
 										isTrueEdits: true,
 										green: true,
 									},
@@ -1029,6 +1029,20 @@ const project = Vue.createApp({
 			},
 		};
 	},
+
+	computed: {
+		calcWorkingDays(a) {
+			// for (let key in this.itemProject.stageParam) {
+			// 	for (let keyUser in this.itemProject.stageParam[key].arrUserStage) {
+			// 		this.itemProject.stageParam[key].arrUserStage[keyUser].calcField["working-days"].valueField = parseInt(this.itemProject.stageParam[key].arrUserStage[keyUser].infoFild["fact-clock"].valueField) / 7;
+			// 	}
+			// }
+		},
+
+		calcPaidClient() {},
+	},
+
+	created() {},
 
 	methods: {
 		editsFieldGlobal(advice) {
@@ -1138,7 +1152,7 @@ const project = Vue.createApp({
 					"hours-laid": {
 						nameField: "Часов заложено",
 						valueField: "",
-						hintField: "13123",
+						hintField: "Количество заложенных на задачу часов",
 					},
 
 					"link-b24": {
@@ -1149,7 +1163,7 @@ const project = Vue.createApp({
 					"fact-clock": {
 						nameField: "Факт часов",
 						valueField: "",
-						hintField: "13123",
+						hintField: "Кол-во рабочих часов, по факту затраченных",
 					},
 
 					"external-bid": {
@@ -1162,19 +1176,19 @@ const project = Vue.createApp({
 					"working-days": {
 						nameField: "Рабочих дней",
 						valueField: "",
-						hintField: "13123",
+						hintField: "Кол-во рабочих часов, по факту затраченных",
 					},
 
 					"paid-client": {
 						nameField: "Оплачено клиентом",
 						valueField: "",
-						hintField: "13123",
+						hintField: "Сумма оплаченная по договору",
 					},
 
 					"shipment-external": {
 						nameField: "Отгрузка (внешняя)",
 						valueField: "",
-						hintField: "13123",
+						hintField: "Отгружено по фактическим часам",
 						isTrueEdits: true,
 						green: true,
 					},
@@ -1191,19 +1205,19 @@ const project = Vue.createApp({
 					expenses: {
 						nameField: "Затраты",
 						valueField: "",
-						hintField: "13123",
+						hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
 					},
 
 					taxation: {
 						nameField: "Налог",
 						valueField: "",
-						hintField: "13123",
+						hintField: "Налоги государству с прибыли",
 					},
 
 					office: {
 						nameField: "Офис",
 						valueField: "",
-						hintField: "13123",
+						hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
 						isTrueEdits: true,
 						green: true,
 					},
@@ -1218,7 +1232,7 @@ const project = Vue.createApp({
 					"all-costs": {
 						nameField: "Всех затрат",
 						valueField: "",
-						hintField: "13123",
+						hintField: "Всего затрат без менеджмента",
 						isTrueEdits: true,
 						green: true,
 					},
