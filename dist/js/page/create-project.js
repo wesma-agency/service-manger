@@ -1,85 +1,3 @@
-const filedInfo = {
-	props: {
-		elclass: String,
-		isedits: Boolean,
-		objfield: Object,
-	},
-
-	emits: ["eventChangeField"],
-
-	data() {
-		return {};
-	},
-
-	methods: {
-		editsField(event) {
-			return {
-				nameGroupField: this.objfield.nameGroupField,
-				nameField: this.objfield.nameObjField,
-				valueField: event.target.value,
-			};
-		},
-	},
-
-	template: `
-        <div class="field-item" :class="[objfield.elField.linkField? '--link': '', isedits? '--isEdits': '', elclass ]">
-            <div class="field-item__group-name">
-                <div class="field-item__name">{{ objfield.elField.nameField }}</div>
-
-                <div class="field-item__hint hint" v-if="objfield.elField.hintField">
-                    <div class="hint__icon">?</div>
-                    <div class="hint__popup">{{ objfield.elField.hintField }}</div>
-                </div>
-            </div>
-            <div class="field-item__wrap-text">
-                <div v-if="!isedits" class="field-item__text">{{ objfield.elField.valueField }}</div>
-                <input v-if="isedits" class="field-item__text" type="text" :value="objfield.elField.valueField" v-on:change="$emit('eventChangeField', editsField($event))">
-            </div>
-        </div>
-    `,
-};
-
-const filedCalc = {
-	props: {
-		elclass: String,
-		isedits: Boolean,
-		objfield: Object,
-	},
-
-	emits: ["eventChangeField"],
-
-	data() {
-		return {};
-	},
-
-	methods: {
-		editsField(event) {
-			return {
-				nameGroupField: this.objfield.nameGroupField,
-				nameField: this.objfield.nameObjField,
-				valueField: event.target.value,
-			};
-		},
-	},
-
-	template: `
-        <div class="field-calc" :class="[isedits? '--isEdits': '', objfield.elField.green? '--green' : '', elclass ]">
-            <div class="field-calc__name">
-                <span>{{ objfield.elField.nameField }}</span>
-
-                <div class="field-calc__hint hint" v-if="objfield.elField.hintField">
-                    <div class="hint__icon">?</div>
-                    <div class="hint__popup">{{ objfield.elField.hintField }}</div>
-                </div>
-            </div>
-            <div class="field-calc__wrap-value">
-                <div v-if="!isedits" class="field-calc__value">{{ objfield.elField.valueField }}</div>
-                <input v-if="isedits" class="field-calc__value" type="text" :value="objfield.elField.valueField" v-on:change="$emit('eventChangeField', editsField($event))">
-            </div>
-        </div>
-    `,
-};
-
 const globalParam = {
 	props: {
 		objfield: Object,
@@ -95,8 +13,10 @@ const globalParam = {
 	},
 
 	methods: {
-		editsField(advice) {
-			this.newValue[advice.nameField] = advice;
+		editsField(event, obj) {
+			this.newValue[obj.nameField] = {
+				valueField: event.target.value,
+			};
 		},
 
 		handlerEdits(save) {
@@ -112,17 +32,28 @@ const globalParam = {
 		},
 	},
 
-	components: {
-		"comp-field-info": filedInfo,
-	},
-
 	template: `
         <div class="global-param__card card-global">
             <div class="card-global__title title-h3">Глобальные параметры</div>
 
             <div class="card-global__list">
 
-            <comp-field-info v-for="(el, name, i) in objfield.infoFild" v-on:eventChangeField="editsField"  :key="i" :isedits="isEdits" :objname="name" :objfield="{'elField': el, 'nameGroupField': 'infoFild', 'nameObjField': name}" :elclass="'card-global__item field-item'"></comp-field-info>
+			<template v-for="(item, name, i) in objfield.infoFild" :key="i">
+				<div class="field-item card-global__item field-item" :class="[item.linkField? '--link': '', isEdits? '--isEdits': '']">
+					<div class="field-item__group-name">
+						<div class="field-item__name">{{ item.nameField }}</div>
+
+						<div class="field-item__hint hint" v-if="item.hintField">
+							<div class="hint__icon">?</div>
+							<div class="hint__popup">{{ item.hintField }}</div>
+						</div>
+					</div>
+					<div class="field-item__wrap-text">
+						<div v-if="!isEdits" class="field-item__text">{{ item.valueField }}</div>
+						<input v-if="isEdits" class="field-item__text" type="text" :value="item.valueField" v-on:change="editsField($event, {nameField: name})">
+					</div>
+				</div>
+			</template>
 
                 <div class="card-global__item info-global">
 
@@ -193,14 +124,282 @@ const globalParam = {
 
 const compUser = {
 	props: {
-		isedits: Boolean,
 		objuser: Object,
 	},
 
 	emits: ["eventChangeField", "eventChangeUserName", "eventDeleteUser"],
 
 	data() {
-		return {};
+		return {
+			calcField: {
+				"working-days": {
+					nameField: "Рабочих дней",
+					valueField: 0,
+					hintField: "Кол-во рабочих часов, по факту затраченных",
+					isTrueEdits: false,
+				},
+
+				wages: {
+					nameField: "Затраты",
+					valueField: "",
+					hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
+					isTrueEdits: this.objuser.type === "inside" ? false : this.objuser.type === "outside" ? true : false,
+				},
+
+				"paid-client": {
+					nameField: "Оплачено клиентом",
+					valueField: 0,
+					hintField: "Сумма оплаченная по договору",
+					isTrueEdits: false,
+				},
+
+				taxation: {
+					nameField: "Налог",
+					valueField: 0,
+					hintField: "Налоги государству с прибыли",
+					isTrueEdits: false,
+				},
+
+				"shipment-external": {
+					nameField: "Отгрузка (внешняя)",
+					valueField: 0,
+					hintField: "Отгружено по фактическим часам",
+					isTrueEdits: false,
+					green: true,
+				},
+
+				office: {
+					nameField: "Офис",
+					valueField: 0,
+					hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
+					isTrueEdits: false,
+					green: true,
+				},
+
+				difference: {
+					nameField: "Разница оплотгруж",
+					valueField: 0,
+					isTrueEdits: false,
+					green: true,
+				},
+
+				"payment-sales": {
+					nameField: "Выплата сейлзу",
+					valueField: 0,
+					isTrueEdits: false,
+					green: true,
+				},
+
+				"all-costs": {
+					nameField: "Всех затрат",
+					valueField: 0,
+					hintField: "Всего затрат без менеджмента",
+					isTrueEdits: false,
+					green: true,
+				},
+			},
+
+			resultField: {
+				profit: {
+					nameField: "Прибыль",
+					valueField: 0,
+					hintField: "Итоговая прибыль",
+				},
+
+				"manager-salary": {
+					nameField: "ЗП менеджера",
+					valueField: 0,
+				},
+
+				"result-profit": {
+					nameField: "Итого прибыль",
+					valueField: 0,
+					hintField: "Прибыль по отделу.",
+				},
+
+				profitability: {
+					nameField: "Рент",
+					valueField: 0,
+					hintField: "Рентабельность конкретного сотрудника.",
+				},
+			},
+		};
+	},
+
+	computed: {
+		workingDays: {
+			get() {
+				return +(this.objuser.infoFild["hours-laid"].valueField / 7).toFixed(2);
+			},
+
+			set() {
+				this.calcField["working-days"].valueField = +(this.objuser.infoFild["hours-laid"].valueField / 7).toFixed(2);
+			},
+		},
+
+		paidСlient: {
+			get() {
+				return +(this.objuser.infoFild["hours-laid"].valueField * this.objuser.infoFild["external-bid"].valueField).toFixed(2);
+			},
+
+			set() {
+				this.calcField["paid-client"].valueField = +(this.objuser.infoFild["hours-laid"].valueField * this.objuser.infoFild["external-bid"].valueField).toFixed(2);
+			},
+		},
+
+		shipmentExternal: {
+			get() {
+				return +(this.objuser.infoFild["fact-clock"].valueField * 1800).toFixed(2);
+			},
+
+			set() {
+				this.calcField["shipment-external"].valueField = +(this.objuser.infoFild["fact-clock"].valueField * 1800).toFixed(2);
+			},
+		},
+
+		difference: {
+			get() {
+				return +(this.paidСlient - this.shipmentExternal).toFixed(2);
+			},
+
+			set() {
+				this.calcField["difference"].valueField = +(this.paidСlient - this.shipmentExternal).toFixed(2);
+			},
+		},
+
+		wages: {
+			get() {
+				if (this.objuser.type === "inside") {
+					return +(this.objuser.infoFild["fact-clock"].valueField * (this.objuser.infoFild["wages"].valueField / 22 / 7)).toFixed(2);
+				}
+
+				if (this.objuser.type === "outside") {
+					return +this.objuser.infoFild["wages"].valueField.toFixed(2);
+				}
+			},
+
+			set() {
+				if (this.objuser.type === "inside") {
+					this.calcField["wages"].valueField = +(this.objuser.infoFild["fact-clock"].valueField * (this.objuser.infoFild["wages"].valueField / 22 / 7)).toFixed(2);
+				}
+
+				if (this.objuser.type === "outside") {
+					this.calcField["wages"].valueField = +this.objuser.infoFild["wages"].valueField.toFixed(2);
+				}
+			},
+		},
+
+		taxation: {
+			get() {
+				return +(this.paidСlient * 0.15).toFixed(2);
+			},
+
+			set() {
+				this.calcField["taxation"].valueField = +(this.paidСlient * 0.15).toFixed(2);
+			},
+		},
+
+		paymentSales: {
+			get() {
+				return +(this.paidСlient * 0.1).toFixed(2);
+			},
+
+			set() {
+				this.calcField["payment-sales"].valueField = +(this.paidСlient * 0.15).toFixed(2);
+			},
+		},
+
+		office: {
+			get() {
+				if (this.objuser.type === "inside") {
+					return +((this.$root.$data.itemProject.globalParam.office[this.objuser.office].price / this.$root.$data.itemProject.globalParam.office[this.objuser.office].people / 22) * this.workingDays).toFixed(2);
+				}
+
+				if (this.objuser.type === "outside") {
+					return 0;
+				}
+			},
+
+			set() {
+				if (this.objuser.type === "inside") {
+					this.calcField["office"].valueField = +((this.$root.$data.itemProject.globalParam.office[this.objuser.office].price / this.$root.$data.itemProject.globalParam.office[this.objuser.office].people / 22) * this.workingDays).toFixed(2);
+				}
+
+				if (this.objuser.type === "outside") {
+					this.calcField["office"].valueField = 0;
+				}
+			},
+		},
+
+		allCosts: {
+			get() {
+				return +(this.wages + this.taxation + this.paymentSales + this.office).toFixed(2);
+			},
+
+			set() {
+				this.calcField["all-costs"].valueField = +(this.wages + this.taxation + this.paymentSales + this.office).toFixed(2);
+			},
+		},
+
+		profit: {
+			get() {
+				return +(this.paidСlient - this.allCosts).toFixed(2);
+			},
+
+			set() {
+				this.resultField["profit"].valueField = +(this.paidСlient - this.allCosts).toFixed(2);
+			},
+		},
+
+		managerSalary: {
+			get() {
+				return +(this.profit * 0.1).toFixed(2);
+			},
+
+			set() {
+				this.resultField["manager-salary"].valueField = +(this.profit * 0.1).toFixed(2);
+			},
+		},
+
+		resultProfit: {
+			get() {
+				return +(this.profit - this.managerSalary).toFixed(2);
+			},
+
+			set() {
+				this.resultField["result-profit"].valueField = +(this.profit - this.managerSalary).toFixed(2);
+			},
+		},
+
+		profitability: {
+			get() {
+				return +((this.profit * 100) / this.paidСlient).toFixed(0);
+			},
+
+			set() {
+				this.resultField["profitability"].valueField = +((this.profit * 100) / this.paidСlient).toFixed(0);
+			},
+		},
+
+		calcValue: {
+			get() {
+				return {
+					"working-days": this.workingDays,
+					"paid-client": this.paidСlient,
+					"shipment-external": this.shipmentExternal,
+					difference: this.difference,
+					wages: this.wages,
+					taxation: this.taxation,
+					office: this.office,
+					"payment-sales": this.paymentSales,
+					"all-costs": this.allCosts,
+					profit: this.profit,
+					"manager-salary": this.managerSalary,
+					"result-profit": this.resultProfit,
+					profitability: this.profitability,
+				};
+			},
+		},
 	},
 
 	methods: {
@@ -222,17 +421,15 @@ const compUser = {
 			this.$emit("eventChangeUserName", objUser);
 		},
 
-		editsField(advice) {
-			let objUser = advice;
-			objUser.idUser = this.objuser.idUser;
-			objUser.sortPositionUser = this.objuser.sortPositionUser;
+		editsField(event, obj) {
+			let objUser = {
+				nameField: obj.nameField,
+				valueField: +(+event.target.value).toFixed(2),
+				idUser: this.objuser.idUser,
+				sortPositionUser: this.objuser.sortPositionUser,
+			};
 			this.$emit("eventChangeField", objUser);
 		},
-	},
-
-	components: {
-		"comp-field-info": filedInfo,
-		"comp-field-calc": filedCalc,
 	},
 
 	template: `
@@ -250,7 +447,23 @@ const compUser = {
 
                         <div class="info-user-stage__list">
 
-                            <comp-field-info v-for="(el, name, i) in objuser.infoFild" :key="i" :isedits="true" v-on:eventChangeField="editsField" :objfield="{'elField': el, 'nameGroupField': 'infoFild', 'nameObjField': name}" :elclass="'info-user-stage__item'"></comp-field-info>
+							<template v-for="(item, name, i) in objuser.infoFild" :key="i">
+								<div v-if="item.visibility" class="field-item info-user-stage__item" :class="[item.linkField? '--link': '']">
+									
+									<div class="field-item__group-name">
+										<div class="field-item__name">{{item.nameField }}</div>
+						
+										<div class="field-item__hint hint" v-if="item.hintField">
+											<div class="hint__icon">?</div>
+											<div class="hint__popup">{{ item.hintField }}</div>
+										</div>
+									</div>
+									<div class="field-item__wrap-text">
+										<div v-if="!item.isTrueEdits" class="field-item__text">{{ item.valueField }}</div>
+										<input v-if="item.isTrueEdits" class="field-item__text" type="text" :value="item.valueField" v-on:change="editsField($event, {nameField: name})">
+									</div>
+								</div>
+							</template>
 
                         </div>
 
@@ -261,23 +474,30 @@ const compUser = {
 
                 <div class="user-stage__column">
                     <div class="user-stage__calc calc-user-stage">
-                        <div class="calc-user-stage__title">Расчеты</div>
+
+						<div class="calc-user-stage__caption">
+							<div class="calc-user-stage__title">Расходы</div>
+							<div class="calc-user-stage__title">Расчеты</div>
+						</div>
 
                         <div class="calc-user-stage__list">
 
-                            <comp-field-calc v-for="(el, name, i) in objuser.calcField" v-on:eventChangeField="editsField" :key="i" :isedits="true"  :objfield="{'elField': el, 'nameGroupField': 'calcField', 'nameObjField': name}" :elclass="'calc-user-stage__item'"></comp-field-calc>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="user-stage__column">
-                    <div class="user-stage__calc calc-user-stage">
-                        <div class="calc-user-stage__title">Расходы</div>
-
-                        <div class="calc-user-stage__list">
-
-                            <comp-field-calc v-for="(el, name, i) in objuser.expensesField" v-on:eventChangeField="editsField"  :key="i" :isedits="true" :objfield="{'elField': el, 'nameGroupField': 'expensesField', 'nameObjField': name}" :elclass="'calc-user-stage__item'"></comp-field-calc>
+							<template v-for="(item, name, i) in calcField" :key="i">
+								<div class="field-calc calc-user-stage__item" :class="[item.green? '--green' : '' ]">
+									<div class="field-calc__name">
+										<span>{{ item.nameField }}</span>
+						
+										<div class="field-calc__hint hint" v-if="item.hintField">
+											<div class="hint__icon">?</div>
+											<div class="hint__popup">{{ item.hintField }}</div>
+										</div>
+									</div>
+									<div class="field-calc__wrap-value" :class="[item.isTrueEdits? '--edits' : '' ]">
+										<div v-if="!item.isTrueEdits" class="field-calc__value">{{ calcValue[name] }}</div>
+										<input v-if="item.isTrueEdits" class="field-calc__value --input" type="text" :value="calcValue[name]" v-on:change="editsField($event, {nameField: name})">
+									</div>
+								</div>
+							</template>
 
                         </div>
                     </div>
@@ -286,7 +506,25 @@ const compUser = {
                 <div class="user-stage__column">
                     <div class="user-stage__calc calc-user-stage">
                         <div class="calc-user-stage__title">Итог</div>
+							<div class="calc-user-stage__list-result">
 
+							<template v-for="(item, name, i) in resultField" :key="i">
+								<div class="field-calc calc-user-stage__item-result">
+									<div class="field-calc__name">
+										<span>{{ item.nameField }}</span>
+						
+										<div class="field-calc__hint hint" v-if="item.hintField">
+											<div class="hint__icon">?</div>
+											<div class="hint__popup">{{ item.hintField }}</div>
+										</div>
+									</div>
+									<div class="field-calc__wrap-value">
+										<div class="field-calc__value">{{ calcValue[name] }}</div>
+									</div>
+								</div>
+							</template>
+
+						</div>
                     </div>
                 </div>
             </div>
@@ -544,7 +782,7 @@ const project = Vue.createApp({
 
 						"agreed-expenses": {
 							nameField: "Согласованные расходы, руб",
-							valueField: "111",
+							valueField: 111,
 							hintField: "Расходы, которые компания отдала за покупку лида, % другому агенству или партнеру",
 						},
 
@@ -562,12 +800,24 @@ const project = Vue.createApp({
 
 						"date-delivery": {
 							nameField: "Дата сдачи",
-							valueField: "111",
+							valueField: 111,
 						},
 
 						"percent-sales": {
 							nameField: "% сейлзу",
-							valueField: "111",
+							valueField: 111,
+						},
+					},
+
+					office: {
+						officeBrynsk: {
+							price: 115000,
+							people: 15,
+						},
+
+						officeMsk: {
+							price: 112000,
+							people: 4,
 						},
 					},
 				},
@@ -590,93 +840,46 @@ const project = Vue.createApp({
 
 								sortPositionUser: 0,
 
+								type: "inside",
+
+								office: "officeMsk",
+
 								infoFild: {
 									"hours-laid": {
 										nameField: "Часов заложено",
-										valueField: "112",
+										valueField: 103,
 										hintField: "Количество заложенных на задачу часов",
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"link-b24": {
 										nameField: "Ссылка на задачу в б24",
 										valueField: "111",
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"fact-clock": {
 										nameField: "Факт часов",
-										valueField: "80.5",
+										valueField: 103,
 										hintField: "Кол-во рабочих часов, по факту затраченных",
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"external-bid": {
 										nameField: "Ставка (внеш), руб",
-										valueField: "1800",
-									},
-								},
-
-								calcField: {
-									"working-days": {
-										nameField: "Рабочих дней",
-										valueField: "",
-										hintField: "Кол-во рабочих часов, по факту затраченных",
-									},
-
-									"paid-client": {
-										nameField: "Оплачено клиентом",
-										valueField: "",
-										hintField: "Сумма оплаченная по договору",
-									},
-
-									"shipment-external": {
-										nameField: "Отгрузка (внешняя)",
-										valueField: "",
-										hintField: "Отгружено по фактическим часам",
+										valueField: 1800,
+										visibility: true,
 										isTrueEdits: true,
-										green: true,
 									},
 
-									difference: {
-										nameField: "Разница оплотгруж",
-										valueField: "",
-										isTrueEdits: true,
-										green: true,
-									},
-								},
-
-								expensesField: {
-									expenses: {
-										nameField: "Затраты",
-										valueField: "",
-										hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
-									},
-
-									taxation: {
-										nameField: "Налог",
-										valueField: "",
-										hintField: "Налоги государству с прибыли",
-									},
-
-									office: {
-										nameField: "Офис",
-										valueField: "",
-										hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
-										isTrueEdits: true,
-										green: true,
-									},
-
-									"payment-sales": {
-										nameField: "Выплата сейлзу",
-										valueField: "",
-										isTrueEdits: true,
-										green: true,
-									},
-
-									"all-costs": {
-										nameField: "Всех затрат",
-										valueField: "",
-										hintField: "Всего затрат без менеджмента",
-										isTrueEdits: true,
-										green: true,
+									wages: {
+										nameField: "Заработная плата",
+										valueField: 70000,
+										visibility: false,
+										isTrueEdits: false,
 									},
 								},
 							},
@@ -688,93 +891,44 @@ const project = Vue.createApp({
 
 								sortPositionUser: 1,
 
+								type: "outside",
+
 								infoFild: {
 									"hours-laid": {
 										nameField: "Часов заложено",
-										valueField: "112",
+										valueField: 112,
 										hintField: "Количество заложенных на задачу часов",
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"link-b24": {
 										nameField: "Ссылка на задачу в б24",
-										valueField: "111",
+										valueField: 111,
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"fact-clock": {
 										nameField: "Факт часов",
-										valueField: "80.5",
+										valueField: 80.5,
 										hintField: "Кол-во рабочих часов, по факту затраченных",
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"external-bid": {
 										nameField: "Ставка (внеш), руб",
-										valueField: "1800",
-									},
-								},
-
-								calcField: {
-									"working-days": {
-										nameField: "Рабочих дней",
-										valueField: "14,71428571",
-										hintField: "Кол-во рабочих часов, по факту затраченных",
-									},
-
-									"paid-client": {
-										nameField: "Оплачено клиентом",
-										valueField: "185 400",
-										hintField: "Сумма оплаченная по договору",
-									},
-
-									"shipment-external": {
-										nameField: "Отгрузка (внешняя)",
-										valueField: "140 230",
-										hintField: "Отгружено по фактическим часам",
+										valueField: 1800,
+										visibility: true,
 										isTrueEdits: true,
-										green: true,
 									},
 
-									difference: {
-										nameField: "Разница оплотгруж",
-										valueField: "45170",
-										isTrueEdits: true,
-										green: true,
-									},
-								},
-
-								expensesField: {
-									expenses: {
-										nameField: "Затраты",
-										valueField: "46 818",
-										hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
-									},
-
-									taxation: {
-										nameField: "Налог",
-										valueField: "27 810",
-										hintField: "Налоги государству с прибыли",
-									},
-
-									office: {
-										nameField: "Офис",
-										valueField: "18727,27273",
-										hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
-										isTrueEdits: true,
-										green: true,
-									},
-
-									"payment-sales": {
-										nameField: "Выплата сейлзу",
-										valueField: "18 540",
-										isTrueEdits: true,
-										green: true,
-									},
-
-									"all-costs": {
-										nameField: "Всех затрат",
-										valueField: "111 895",
-										hintField: "Всего затрат без менеджмента",
-										isTrueEdits: true,
-										green: true,
+									wages: {
+										nameField: "Заработная плата",
+										valueField: 70000,
+										visibility: false,
+										isTrueEdits: false,
 									},
 								},
 							},
@@ -798,93 +952,44 @@ const project = Vue.createApp({
 
 								sortPositionUser: 0,
 
+								type: "outside",
+
 								infoFild: {
 									"hours-laid": {
 										nameField: "Часов заложено",
-										valueField: "112",
+										valueField: 112,
 										hintField: "Количество заложенных на задачу часов",
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"link-b24": {
 										nameField: "Ссылка на задачу в б24",
-										valueField: "111",
+										valueField: 111,
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"fact-clock": {
 										nameField: "Факт часов",
-										valueField: "80.5",
+										valueField: 80.5,
 										hintField: "Кол-во рабочих часов, по факту затраченных",
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"external-bid": {
 										nameField: "Ставка (внеш), руб",
-										valueField: "1800",
-									},
-								},
-
-								calcField: {
-									"working-days": {
-										nameField: "Рабочих дней",
-										valueField: "14,71428571",
-										hintField: "Кол-во рабочих часов, по факту затраченных",
-									},
-
-									"paid-client": {
-										nameField: "Оплачено клиентом",
-										valueField: "185 400",
-										hintField: "Сумма оплаченная по договору",
-									},
-
-									"shipment-external": {
-										nameField: "Отгрузка (внешняя)",
-										valueField: "140 230",
-										hintField: "Отгружено по фактическим часам",
+										valueField: 1800,
+										visibility: true,
 										isTrueEdits: true,
-										green: true,
 									},
 
-									difference: {
-										nameField: "Разница оплотгруж",
-										valueField: "45170",
-										isTrueEdits: true,
-										green: true,
-									},
-								},
-
-								expensesField: {
-									expenses: {
-										nameField: "Затраты",
-										valueField: "46 818",
-										hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
-									},
-
-									taxation: {
-										nameField: "Налог",
-										valueField: "27 810",
-										hintField: "Налоги государству с прибыли",
-									},
-
-									office: {
-										nameField: "Офис",
-										valueField: "18727,27273",
-										hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
-										isTrueEdits: true,
-										green: true,
-									},
-
-									"payment-sales": {
-										nameField: "Выплата сейлзу",
-										valueField: "18 540",
-										isTrueEdits: true,
-										green: true,
-									},
-
-									"all-costs": {
-										nameField: "Всех затрат",
-										valueField: "111 895",
-										hintField: "Всего затрат без менеджмента",
-										isTrueEdits: true,
-										green: true,
+									wages: {
+										nameField: "Заработная плата",
+										valueField: 70000,
+										visibility: false,
+										isTrueEdits: false,
 									},
 								},
 							},
@@ -896,93 +1001,46 @@ const project = Vue.createApp({
 
 								sortPositionUser: 1,
 
+								type: "inside",
+
+								office: "officeMsk",
+
 								infoFild: {
 									"hours-laid": {
 										nameField: "Часов заложено",
-										valueField: "112",
+										valueField: 112,
 										hintField: "Количество заложенных на задачу часов",
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"link-b24": {
 										nameField: "Ссылка на задачу в б24",
-										valueField: "111",
+										valueField: 111,
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"fact-clock": {
 										nameField: "Факт часов",
-										valueField: "80.5",
+										valueField: 80.5,
 										hintField: "Кол-во рабочих часов, по факту затраченных",
+										visibility: true,
+										isTrueEdits: true,
 									},
 
 									"external-bid": {
 										nameField: "Ставка (внеш), руб",
-										valueField: "1800",
-									},
-								},
-
-								calcField: {
-									"working-days": {
-										nameField: "Рабочих дней",
-										valueField: "14,71428571",
-										hintField: "Кол-во рабочих часов, по факту затраченных",
-									},
-
-									"paid-client": {
-										nameField: "Оплачено клиентом",
-										valueField: "185 400",
-										hintField: "Сумма оплаченная по договору",
-									},
-
-									"shipment-external": {
-										nameField: "Отгрузка (внешняя)",
-										valueField: "140 230",
-										hintField: "Отгружено по фактическим часам",
+										valueField: 1800,
+										visibility: true,
 										isTrueEdits: true,
-										green: true,
 									},
 
-									difference: {
-										nameField: "Разница оплотгруж",
-										valueField: "45170",
-										isTrueEdits: true,
-										green: true,
-									},
-								},
-
-								expensesField: {
-									expenses: {
-										nameField: "Затраты",
-										valueField: "46 818",
-										hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
-									},
-
-									taxation: {
-										nameField: "Налог",
-										valueField: "27 810",
-										hintField: "Налоги государству с прибыли",
-									},
-
-									office: {
-										nameField: "Офис",
-										valueField: "18727,27273",
-										hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
-										isTrueEdits: true,
-										green: true,
-									},
-
-									"payment-sales": {
-										nameField: "Выплата сейлзу",
-										valueField: "18 540",
-										isTrueEdits: true,
-										green: true,
-									},
-
-									"all-costs": {
-										nameField: "Всех затрат",
-										valueField: "111 895",
-										hintField: "Всего затрат без менеджмента",
-										isTrueEdits: true,
-										green: true,
+									wages: {
+										nameField: "Заработная плата",
+										valueField: 70000,
+										visibility: false,
+										isTrueEdits: false,
 									},
 								},
 							},
@@ -1030,30 +1088,16 @@ const project = Vue.createApp({
 		};
 	},
 
-	computed: {
-		calcWorkingDays(a) {
-			// for (let key in this.itemProject.stageParam) {
-			// 	for (let keyUser in this.itemProject.stageParam[key].arrUserStage) {
-			// 		this.itemProject.stageParam[key].arrUserStage[keyUser].calcField["working-days"].valueField = parseInt(this.itemProject.stageParam[key].arrUserStage[keyUser].infoFild["fact-clock"].valueField) / 7;
-			// 	}
-			// }
-		},
-
-		calcPaidClient() {},
-	},
-
-	created() {},
-
 	methods: {
 		editsFieldGlobal(advice) {
 			for (let key in advice) {
-				this.itemProject.globalParam[advice[key].nameGroupField][key].valueField = advice[key].valueField;
+				this.itemProject.globalParam.infoFild[key].valueField = advice[key].valueField;
 			}
 		},
 
 		editsFieldStage(advice) {
-			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser][advice.nameGroupField][advice.nameField].valueField = advice.valueField;
-			console.log(advice);
+			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser]["infoFild"][advice.nameField].valueField = advice.valueField;
+			console.log(this.itemProject);
 		},
 
 		changeUserParam(advice) {
@@ -1148,93 +1192,41 @@ const project = Vue.createApp({
 
 				userName: "",
 
+				type: advice.postUser,
+
+				office: "officeMsk",
+
 				infoFild: {
 					"hours-laid": {
 						nameField: "Часов заложено",
 						valueField: "",
 						hintField: "Количество заложенных на задачу часов",
+						visibility: true,
 					},
 
 					"link-b24": {
 						nameField: "Ссылка на задачу в б24",
 						valueField: "",
+						visibility: true,
 					},
 
 					"fact-clock": {
 						nameField: "Факт часов",
 						valueField: "",
 						hintField: "Кол-во рабочих часов, по факту затраченных",
+						visibility: true,
 					},
 
 					"external-bid": {
 						nameField: "Ставка (внеш), руб",
 						valueField: "",
-					},
-				},
-
-				calcField: {
-					"working-days": {
-						nameField: "Рабочих дней",
-						valueField: "",
-						hintField: "Кол-во рабочих часов, по факту затраченных",
+						visibility: true,
 					},
 
-					"paid-client": {
-						nameField: "Оплачено клиентом",
+					wages: {
+						nameField: "Заработная плата",
 						valueField: "",
-						hintField: "Сумма оплаченная по договору",
-					},
-
-					"shipment-external": {
-						nameField: "Отгрузка (внешняя)",
-						valueField: "",
-						hintField: "Отгружено по фактическим часам",
-						isTrueEdits: true,
-						green: true,
-					},
-
-					difference: {
-						nameField: "Разница оплотгруж",
-						valueField: "",
-						isTrueEdits: true,
-						green: true,
-					},
-				},
-
-				expensesField: {
-					expenses: {
-						nameField: "Затраты",
-						valueField: "",
-						hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
-					},
-
-					taxation: {
-						nameField: "Налог",
-						valueField: "",
-						hintField: "Налоги государству с прибыли",
-					},
-
-					office: {
-						nameField: "Офис",
-						valueField: "",
-						hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
-						isTrueEdits: true,
-						green: true,
-					},
-
-					"payment-sales": {
-						nameField: "Выплата сейлзу",
-						valueField: "",
-						isTrueEdits: true,
-						green: true,
-					},
-
-					"all-costs": {
-						nameField: "Всех затрат",
-						valueField: "",
-						hintField: "Всего затрат без менеджмента",
-						isTrueEdits: true,
-						green: true,
+						visibility: false,
 					},
 				},
 			};

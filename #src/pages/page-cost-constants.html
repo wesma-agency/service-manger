@@ -30,13 +30,9 @@
 
                             <div class="block-constants__tab-controls">
                                 <div class="block-constants__tab-controls-left">
-                                    <div class="block-constants__tab-btn active">Интернет-магазин (уник)</div>
-
-                                    <div class="block-constants__tab-btn">Корпоративный сайт (уник)</div>
-
-                                    <div class="block-constants__tab-btn">Лендинг</div>
-
-                                    <div class="block-constants__tab-btn">Сайт на шаблоне</div>
+                                    <template v-for="(item, index) in costConstants.mainConts">
+                                        <div class="block-constants__tab-btn">{{ item.nameTitle }}</div>
+                                    </template>
                                 </div>
 
                                 <div class="block-constants__tab-controls-right">
@@ -246,6 +242,6 @@
 
 </div>
 
-<script defer src="./js/page/create-project.js"></script>
+<script defer src="./js/page/cost-constants.js"></script>
 
 @@include("../components/_footer.html")

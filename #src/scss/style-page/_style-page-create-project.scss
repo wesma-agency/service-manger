@@ -486,39 +486,26 @@
 
 	&__column {
 		&:nth-child(2) {
+			grid-column: span 2;
 			position: relative;
 			padding-left: 25px;
-			&::before {
-				content: "";
-				position: absolute;
-				top: -26px;
-				left: 0;
-				right: -25px;
-				bottom: -26px;
-				background: #fafafa;
-				border-radius: 20px 0 0 20px;
-				z-index: 1;
-			}
-		}
-
-		&:nth-child(3) {
-			position: relative;
 			padding-right: 25px;
 			&::before {
 				content: "";
 				position: absolute;
 				top: -26px;
 				left: -25px;
-				right: 0;
+				right: -25px;
 				bottom: -26px;
 				background: #fafafa;
-				border-radius: 0 20px 20px 0;
+				border-radius: 20px;
 				z-index: 1;
 			}
 		}
 
-		&:nth-child(4) {
+		&:nth-child(3) {
 			position: relative;
+			padding-left: 25px;
 			&::before {
 				content: "";
 				position: absolute;
@@ -606,6 +593,12 @@
 }
 
 .calc-user-stage {
+	&__caption {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 50px;
+	}
+
 	&__title {
 		text-align: center;
 		font-weight: bold;
@@ -613,23 +606,43 @@
 	}
 
 	&__list {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		column-gap: 50px;
 	}
 
 	&__item {
 		&:not(:last-child) {
 			margin-bottom: 10px;
 		}
+		&:last-child {
+			grid-column-start: 2;
+		}
+	}
+
+	&__item-result {
+		&:not(:last-child) {
+			margin-bottom: 10px;
+		}
+
+		& .field-calc__name > span {
+			color: #000;
+		}
 	}
 }
 
 .field-calc {
+	position: relative;
 	display: flex;
 	justify-content: space-between;
-	padding-bottom: 5px;
-	border-bottom: 1px solid #797979;
+	// border-bottom: 1px solid #797979;
+
 	&__name {
+		flex-grow: 1;
 		display: flex;
 		align-items: center;
+		padding-bottom: 10px;
+		border-bottom: 1px solid #797979;
 		& > span {
 			color: #8087a7;
 		}
@@ -640,7 +653,26 @@
 	}
 
 	&__wrap-value {
-		min-height: 23px;
+		border-bottom: 1px solid #797979;
+
+		&.--edits {
+			position: relative;
+			margin-left: 10px;
+			background: #fff;
+			border-radius: 20px;
+			box-shadow: 0 3px 3px rgba(0, 0, 0, 0.14);
+			border: none;
+			&::before {
+				content: "";
+				position: absolute;
+				top: 50%;
+				left: 10px;
+				transform: translate(0, -50%);
+				width: 12px;
+				height: 12px;
+				background: url("../img/icon-pen-field.svg") no-repeat center / contain;
+			}
+		}
 	}
 
 	&__value {
@@ -649,6 +681,13 @@
 		color: #333333;
 		text-align: right;
 		background: none;
+		height: 100%;
+		min-height: 23px;
+		padding-bottom: 10px;
+
+		&.--input {
+			padding: 5px 10px;
+		}
 	}
 
 	&.--isEdits {
