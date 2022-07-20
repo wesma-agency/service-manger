@@ -1,3 +1,4 @@
+
 const globalParam = {
 	props: {
 		objfield: Object,
@@ -10,6 +11,33 @@ const globalParam = {
 			isEdits: false,
 			newValue: {},
 		};
+	},
+
+	computed: {
+		propStageActive: {
+			get() {
+				for (let key in this.objfield.stageParam) {
+					if (this.objfield.stageParam[key].isActive === true) {
+						let factClock = 0;
+						let hoursLaid = 0
+						let calcProp = {
+							
+						}
+
+						for (let i in this.objfield.stageParam[key].arrUserStage) {
+							factClock += this.objfield.stageParam[key].arrUserStage[i].infoFild["fact-clock"].valueField;
+							hoursLaid += this.objfield.stageParam[key].arrUserStage[i].infoFild["hours-laid"].valueField;
+						}
+
+						return {
+							nameStage: this.objfield.stageParam[key].nameStage,
+							factClock: factClock,
+							hoursLaid: hoursLaid
+						}
+					}
+				}
+			},
+		}
 	},
 
 	methods: {
@@ -38,7 +66,7 @@ const globalParam = {
 
             <div class="card-global__list">
 
-			<template v-for="(item, name, i) in objfield.infoFild" :key="i">
+			<template v-for="(item, name, i) in objfield.globalParam.infoFild" :key="i">
 				<div class="field-item card-global__item field-item" :class="[item.linkField? '--link': '', isEdits? '--isEdits': '']">
 					<div class="field-item__group-name">
 						<div class="field-item__name">{{ item.nameField }}</div>
@@ -70,15 +98,15 @@ const globalParam = {
                         <div class="info-global__column">
                             <div class="info-global__option">
                                 <div class="info-global__option-name">Этап:</div>
-                                <div class="info-global__option-value">Дизайн UX</div>
+                                <div class="info-global__option-value">{{ propStageActive.nameStage }}</div>
                             </div>
                         </div>
 
                         <div class="info-global__column">
                             <div class="info-global__option">
                                 <div class="info-global__option-name">План / факт этапа: </div>
-                                <div class="info-global__option-value">113 / <span
-                                        class="--green">35</span> ч</div>
+                                <div class="info-global__option-value">{{ propStageActive.hoursLaid }} / <span
+                                        class="--green">{{ propStageActive.factClock }}</span> ч</div>
                             </div>
                         </div>
 
@@ -127,7 +155,7 @@ const compUser = {
 		objuser: Object,
 	},
 
-	emits: ["eventChangeField", "eventChangeUserName", "eventDeleteUser"],
+	emits: ["eventChangeField", "eventChangeUserName", "eventDeleteUser", "eventCalcFieldProp"],
 
 	data() {
 		return {
@@ -383,7 +411,7 @@ const compUser = {
 
 		calcValue: {
 			get() {
-				return {
+				let obJClalField = {
 					"working-days": this.workingDays,
 					"paid-client": this.paidСlient,
 					"shipment-external": this.shipmentExternal,
@@ -398,6 +426,14 @@ const compUser = {
 					"result-profit": this.resultProfit,
 					profitability: this.profitability,
 				};
+
+				this.$emit("eventCalcFieldProp", {
+					propCalcField: obJClalField,
+					idUser: this.objuser.idUser,
+					sortPositionUser: this.objuser.sortPositionUser
+				});
+
+				return obJClalField;
 			},
 		},
 	},
@@ -537,7 +573,7 @@ const compStage = {
 		objconfig: Object,
 	},
 
-	emits: ["eventChangeField", "eventChangeUserName", "eventMoveStage", "eventDeleteStage", "eventChangeNamgeStage", "eventAddUser", "eventDeleteUser"],
+	emits: ["eventChangeField", "eventChangeUserName", "eventMoveStage", "eventDeleteStage", "eventChangeNamgeStage", "eventAddUser", "eventDeleteUser", "eventCalcFieldProp"],
 
 	data() {
 		return {
@@ -584,6 +620,13 @@ const compStage = {
 				this.$emit("eventChangeNamgeStage", { stageId: this.objconfig.stageId, sortPositionStage: this.objconfig.sortPositionStage, nameStage: e.target.value });
 			}
 		},
+
+		calcFieldProp(advice) {
+			let objStage = advice;
+			objStage.stageId = this.objconfig.stageId;
+			objStage.sortPositionStage = this.objconfig.sortPositionStage;
+			this.$emit("eventCalcFieldProp", objStage);
+		},
 	},
 
 	components: {
@@ -613,7 +656,7 @@ const compStage = {
 
                         <div class="user-stage__list">
 
-                            <comp-user v-for="(item, name, index) in objconfig.arrUserStage" v-on:eventDeleteUser="deleteUser" v-on:eventChangeUserName="changeUserName" v-on:eventChangeField="editsField" :objuser="item" :isedits="isEdits"></comp-user>
+                            <comp-user v-for="(item, name, index) in objconfig.arrUserStage" v-on:eventCalcFieldProp="calcFieldProp" v-on:eventDeleteUser="deleteUser" v-on:eventChangeUserName="changeUserName" v-on:eventChangeField="editsField" :objuser="item" :isedits="isEdits"></comp-user>
 
                         </div>
 
@@ -1163,11 +1206,17 @@ const project = Vue.createApp({
 		},
 
 		changeDeleteStage(advice) {
-			let index = 0;
 
 			for (let key in this.itemProject.stageParam) {
+
+				if (advice.sortPositionStage === parseInt(key)) {
+					if (this.itemProject.stageParam[advice.sortPositionStage].isActive === true) {
+						this.itemProject.stageParam[1] !== undefined ? this.itemProject.stageParam[1].isActive = true : null;
+					}
+				}
+
 				if (advice.sortPositionStage <= parseInt(key) && this.itemProject.stageParam[parseInt(key) + 1] !== undefined) {
-					this.itemProject.stageParam[parseInt(key) + 1].sortPositionStage = index;
+					this.itemProject.stageParam[parseInt(key) + 1].sortPositionStage = key;
 
 					this.itemProject.stageParam[key] = this.itemProject.stageParam[parseInt(key) + 1];
 				}
@@ -1175,8 +1224,6 @@ const project = Vue.createApp({
 				if (Object.keys(this.itemProject.stageParam).length - 1 == parseInt(key)) {
 					delete this.itemProject.stageParam[key];
 				}
-
-				index++;
 			}
 
 			console.log(this.itemProject);
@@ -1194,38 +1241,42 @@ const project = Vue.createApp({
 
 				type: advice.postUser,
 
-				office: "officeMsk",
+				office: advice.postUser === "inside" ?  "officeMsk" : null,
 
 				infoFild: {
 					"hours-laid": {
 						nameField: "Часов заложено",
-						valueField: "",
+						valueField: 0,
 						hintField: "Количество заложенных на задачу часов",
 						visibility: true,
+						isTrueEdits: true,
 					},
 
 					"link-b24": {
 						nameField: "Ссылка на задачу в б24",
 						valueField: "",
 						visibility: true,
+						isTrueEdits: true,
 					},
 
 					"fact-clock": {
 						nameField: "Факт часов",
-						valueField: "",
+						valueField: 0,
 						hintField: "Кол-во рабочих часов, по факту затраченных",
 						visibility: true,
+						isTrueEdits: true,
 					},
 
 					"external-bid": {
 						nameField: "Ставка (внеш), руб",
-						valueField: "",
+						valueField: 0,
 						visibility: true,
+						isTrueEdits: true,
 					},
 
 					wages: {
 						nameField: "Заработная плата",
-						valueField: "",
+						valueField: advice.postUser === "inside" ?  30000 : 0,
 						visibility: false,
 					},
 				},
@@ -1275,6 +1326,10 @@ const project = Vue.createApp({
 
 			console.log(this.itemProject);
 		},
+
+		calcFieldProp(advice) {
+			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser].calcField = advice.propCalcField;
+		}
 	},
 
 	components: {

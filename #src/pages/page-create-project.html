@@ -30,7 +30,7 @@
                 <div class="global-param__row">
                     <div class="global-param__column">
 
-                        <comp-global-param :objfield="itemProject.globalParam"
+                        <comp-global-param :objfield="itemProject"
                             v-on:event-change-field="editsFieldGlobal">
                         </comp-global-param>
 
@@ -66,7 +66,7 @@
                 v-on:event-change-user-name="changeUserParam" v-on:event-change-field="editsFieldStage"
                 v-on:event-move-stage="changeMoveStage" v-on:event-delete-stage="changeDeleteStage"
                 v-on:event-change-namge-stage="changeNameStage" v-on:event-add-user="addUser"
-                v-on:event-delete-user="deleteUser" :objconfig="item">
+                v-on:event-delete-user="deleteUser" v-on:event-calc-field-prop="calcFieldProp" :objconfig="item">
             </comp-stage>
 
             <div class="create-project__add-stage main-btn" v-on:click="addStage">Добавить этап</div>
