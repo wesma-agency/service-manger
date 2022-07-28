@@ -1,4 +1,3 @@
-
 const globalParam = {
 	props: {
 		objfield: Object,
@@ -18,26 +17,17 @@ const globalParam = {
 			get() {
 				for (let key in this.objfield.stageParam) {
 					if (this.objfield.stageParam[key].isActive === true) {
-						let factClock = 0;
-						let hoursLaid = 0
-						let calcProp = {
-							
-						}
-
-						for (let i in this.objfield.stageParam[key].arrUserStage) {
-							factClock += this.objfield.stageParam[key].arrUserStage[i].infoFild["fact-clock"].valueField;
-							hoursLaid += this.objfield.stageParam[key].arrUserStage[i].infoFild["hours-laid"].valueField;
-						}
-
 						return {
+							profitability: this.objfield.projectProp.profitability,
+							profitabilityStage: this.objfield.stageParam[key].stageProp.profitability,
 							nameStage: this.objfield.stageParam[key].nameStage,
-							factClock: factClock,
-							hoursLaid: hoursLaid
-						}
+							factClock: this.objfield.stageParam[key].stageProp["fact-clock"],
+							hoursLaid: this.objfield.stageParam[key].stageProp["hours-laid"],
+						};
 					}
 				}
 			},
-		}
+		},
 	},
 
 	methods: {
@@ -90,7 +80,7 @@ const globalParam = {
                             <div class="info-global__option">
                                 <div class="info-global__option-name">Рентабельность общая:</div>
                                 <div class="info-global__option-value"><span
-                                        class="--green"><b>55%</b></span>
+                                        class="--green"><b>{{propStageActive.profitability}}%</b></span>
                                 </div>
                             </div>
                         </div>
@@ -114,7 +104,7 @@ const globalParam = {
                         <div class="info-global__column">
                             <div class="info-global__option">
                                 <div class="info-global__option-name">Рентабельность этапа:</div>
-                                <div class="info-global__option-value"><span class="--green"> <b>40%</b>
+                                <div class="info-global__option-value"><span class="--green"> <b>{{propStageActive.profitabilityStage}}%</b>
                                     </span>
                                 </div>
                             </div>
@@ -162,35 +152,35 @@ const compUser = {
 			calcField: {
 				"working-days": {
 					nameField: "Рабочих дней",
-					valueField: 0,
+					valueField: this.objuser.userProp["working-days"],
 					hintField: "Кол-во рабочих часов, по факту затраченных",
 					isTrueEdits: false,
 				},
 
 				wages: {
 					nameField: "Затраты",
-					valueField: "",
+					valueField: this.objuser.userProp["wages"],
 					hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
 					isTrueEdits: this.objuser.type === "inside" ? false : this.objuser.type === "outside" ? true : false,
 				},
 
 				"paid-client": {
 					nameField: "Оплачено клиентом",
-					valueField: 0,
+					valueField: this.objuser.userProp["paid-client"],
 					hintField: "Сумма оплаченная по договору",
 					isTrueEdits: false,
 				},
 
 				taxation: {
 					nameField: "Налог",
-					valueField: 0,
+					valueField: this.objuser.userProp["taxation"],
 					hintField: "Налоги государству с прибыли",
 					isTrueEdits: false,
 				},
 
 				"shipment-external": {
 					nameField: "Отгрузка (внешняя)",
-					valueField: 0,
+					valueField: this.objuser.userProp["shipment-external"],
 					hintField: "Отгружено по фактическим часам",
 					isTrueEdits: false,
 					green: true,
@@ -198,7 +188,7 @@ const compUser = {
 
 				office: {
 					nameField: "Офис",
-					valueField: 0,
+					valueField: this.objuser.userProp["office"],
 					hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
 					isTrueEdits: false,
 					green: true,
@@ -206,21 +196,21 @@ const compUser = {
 
 				difference: {
 					nameField: "Разница оплотгруж",
-					valueField: 0,
+					valueField: this.objuser.userProp["difference"],
 					isTrueEdits: false,
 					green: true,
 				},
 
 				"payment-sales": {
 					nameField: "Выплата сейлзу",
-					valueField: 0,
+					valueField: this.objuser.userProp["payment-sales"],
 					isTrueEdits: false,
 					green: true,
 				},
 
 				"all-costs": {
 					nameField: "Всех затрат",
-					valueField: 0,
+					valueField: this.objuser.userProp["all-costs"],
 					hintField: "Всего затрат без менеджмента",
 					isTrueEdits: false,
 					green: true,
@@ -230,24 +220,24 @@ const compUser = {
 			resultField: {
 				profit: {
 					nameField: "Прибыль",
-					valueField: 0,
+					valueField: this.objuser.userProp["profit"],
 					hintField: "Итоговая прибыль",
 				},
 
 				"manager-salary": {
 					nameField: "ЗП менеджера",
-					valueField: 0,
+					valueField: this.objuser.userProp["manager-salary"],
 				},
 
 				"result-profit": {
 					nameField: "Итого прибыль",
-					valueField: 0,
+					valueField: this.objuser.userProp["result-profit"],
 					hintField: "Прибыль по отделу.",
 				},
 
 				profitability: {
 					nameField: "Рент",
-					valueField: 0,
+					valueField: this.objuser.userProp["profitability"],
 					hintField: "Рентабельность конкретного сотрудника.",
 				},
 			},
@@ -430,7 +420,7 @@ const compUser = {
 				this.$emit("eventCalcFieldProp", {
 					propCalcField: obJClalField,
 					idUser: this.objuser.idUser,
-					sortPositionUser: this.objuser.sortPositionUser
+					sortPositionUser: this.objuser.sortPositionUser,
 				});
 
 				return obJClalField;
@@ -529,8 +519,8 @@ const compUser = {
 										</div>
 									</div>
 									<div class="field-calc__wrap-value" :class="[item.isTrueEdits? '--edits' : '' ]">
-										<div v-if="!item.isTrueEdits" class="field-calc__value">{{ calcValue[name] }}</div>
-										<input v-if="item.isTrueEdits" class="field-calc__value --input" type="text" :value="calcValue[name]" v-on:change="editsField($event, {nameField: name})">
+										<div v-if="!item.isTrueEdits" class="field-calc__value">{{ objuser.userProp[name] }}</div>
+										<input v-if="item.isTrueEdits" class="field-calc__value --input" type="text" :value="calcField[name].valueField" v-on:change="editsField($event, {nameField: name})">
 									</div>
 								</div>
 							</template>
@@ -555,7 +545,7 @@ const compUser = {
 										</div>
 									</div>
 									<div class="field-calc__wrap-value">
-										<div class="field-calc__value">{{ calcValue[name] }}</div>
+										<div class="field-calc__value">{{ resultField[name].valueField }}</div>
 									</div>
 								</div>
 							</template>
@@ -586,7 +576,6 @@ const compStage = {
 			this.isEdits = !this.isEdits;
 
 			if (this.isEdits === false) {
-				console.log(this);
 			} else {
 				this.$nextTick(() => {
 					this.$refs.inputNameStage.focus();
@@ -623,8 +612,10 @@ const compStage = {
 
 		calcFieldProp(advice) {
 			let objStage = advice;
+
 			objStage.stageId = this.objconfig.stageId;
 			objStage.sortPositionStage = this.objconfig.sortPositionStage;
+
 			this.$emit("eventCalcFieldProp", objStage);
 		},
 	},
@@ -815,339 +806,592 @@ const compActvieManager = {
 const project = Vue.createApp({
 	data() {
 		return {
-			itemProject: {
-				globalParam: {
-					infoFild: {
-						"name-project": {
-							nameField: "Название проекта",
-							valueField: "111",
-						},
+			itemProject: null,
+			isLoading: false,
+			// itemProject: {
+			// 	globalParam: {
+			// 		infoFild: {
+			// 			"name-project": {
+			// 				nameField: "Название проекта",
+			// 				valueField: "111",
+			// 			},
 
-						"agreed-expenses": {
-							nameField: "Согласованные расходы, руб",
-							valueField: 111,
-							hintField: "Расходы, которые компания отдала за покупку лида, % другому агенству или партнеру",
-						},
+			// 			"agreed-expenses": {
+			// 				nameField: "Согласованные расходы, руб",
+			// 				valueField: 111,
+			// 				hintField: "Расходы, которые компания отдала за покупку лида, % другому агенству или партнеру",
+			// 			},
 
-						"link-b24": {
-							nameField: "Ссылка на группу в б24",
-							valueField: "111",
-							linkField: true,
-						},
+			// 			"link-b24": {
+			// 				nameField: "Ссылка на группу в б24",
+			// 				valueField: "111",
+			// 				linkField: true,
+			// 			},
 
-						"link-deal-b24": {
-							nameField: "Ссылка на сделку в б24",
-							valueField: "111",
-							linkField: true,
-						},
+			// 			"link-deal-b24": {
+			// 				nameField: "Ссылка на сделку в б24",
+			// 				valueField: "111",
+			// 				linkField: true,
+			// 			},
 
-						"date-delivery": {
-							nameField: "Дата сдачи",
-							valueField: 111,
-						},
+			// 			"date-delivery": {
+			// 				nameField: "Дата сдачи",
+			// 				valueField: 111,
+			// 			},
 
-						"percent-sales": {
-							nameField: "% сейлзу",
-							valueField: 111,
-						},
-					},
+			// 			"percent-sales": {
+			// 				nameField: "% сейлзу",
+			// 				valueField: 111,
+			// 			},
+			// 		},
 
-					office: {
-						officeBrynsk: {
-							price: 115000,
-							people: 15,
-						},
+			// 		office: {
+			// 			officeBrynsk: {
+			// 				price: 115000,
+			// 				people: 15,
+			// 			},
 
-						officeMsk: {
-							price: 112000,
-							people: 4,
-						},
-					},
-				},
+			// 			officeMsk: {
+			// 				price: 112000,
+			// 				people: 4,
+			// 			},
+			// 		},
+			// 	},
 
-				stageParam: {
-					0: {
-						stageId: "1",
+			// 	stageParam: {
+			// 		0: {
+			// 			stageId: "1",
 
-						sortPositionStage: 0,
+			// 			sortPositionStage: 0,
 
-						nameStage: "Прототипирование",
+			// 			nameStage: "Прототипирование",
 
-						isActive: true,
+			// 			isActive: true,
 
-						arrUserStage: {
-							0: {
-								idUser: "1",
+			// 			arrUserStage: {
+			// 				0: {
+			// 					idUser: "1",
 
-								userName: "Менеджер",
+			// 					userName: "Менеджер",
 
-								sortPositionUser: 0,
+			// 					sortPositionUser: 0,
 
-								type: "inside",
+			// 					type: "inside",
 
-								office: "officeMsk",
+			// 					office: "officeMsk",
 
-								infoFild: {
-									"hours-laid": {
-										nameField: "Часов заложено",
-										valueField: 103,
-										hintField: "Количество заложенных на задачу часов",
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 					infoFild: {
+			// 						"hours-laid": {
+			// 							nameField: "Часов заложено",
+			// 							valueField: 103,
+			// 							hintField: "Количество заложенных на задачу часов",
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"link-b24": {
-										nameField: "Ссылка на задачу в б24",
-										valueField: "111",
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"link-b24": {
+			// 							nameField: "Ссылка на задачу в б24",
+			// 							valueField: "111",
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"fact-clock": {
-										nameField: "Факт часов",
-										valueField: 103,
-										hintField: "Кол-во рабочих часов, по факту затраченных",
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"fact-clock": {
+			// 							nameField: "Факт часов",
+			// 							valueField: 103,
+			// 							hintField: "Кол-во рабочих часов, по факту затраченных",
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"external-bid": {
-										nameField: "Ставка (внеш), руб",
-										valueField: 1800,
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"external-bid": {
+			// 							nameField: "Ставка (внеш), руб",
+			// 							valueField: 1800,
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									wages: {
-										nameField: "Заработная плата",
-										valueField: 70000,
-										visibility: false,
-										isTrueEdits: false,
-									},
-								},
-							},
+			// 						wages: {
+			// 							nameField: "Заработная плата",
+			// 							valueField: 70000,
+			// 							visibility: false,
+			// 							isTrueEdits: false,
+			// 						},
+			// 					},
+			// 				},
 
-							1: {
-								idUser: "2",
+			// 				1: {
+			// 					idUser: "2",
 
-								userName: "Менеджер2",
+			// 					userName: "Менеджер2",
 
-								sortPositionUser: 1,
+			// 					sortPositionUser: 1,
 
-								type: "outside",
+			// 					type: "outside",
 
-								infoFild: {
-									"hours-laid": {
-										nameField: "Часов заложено",
-										valueField: 112,
-										hintField: "Количество заложенных на задачу часов",
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 					infoFild: {
+			// 						"hours-laid": {
+			// 							nameField: "Часов заложено",
+			// 							valueField: 112,
+			// 							hintField: "Количество заложенных на задачу часов",
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"link-b24": {
-										nameField: "Ссылка на задачу в б24",
-										valueField: 111,
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"link-b24": {
+			// 							nameField: "Ссылка на задачу в б24",
+			// 							valueField: 111,
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"fact-clock": {
-										nameField: "Факт часов",
-										valueField: 80.5,
-										hintField: "Кол-во рабочих часов, по факту затраченных",
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"fact-clock": {
+			// 							nameField: "Факт часов",
+			// 							valueField: 80.5,
+			// 							hintField: "Кол-во рабочих часов, по факту затраченных",
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"external-bid": {
-										nameField: "Ставка (внеш), руб",
-										valueField: 1800,
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"external-bid": {
+			// 							nameField: "Ставка (внеш), руб",
+			// 							valueField: 1800,
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									wages: {
-										nameField: "Заработная плата",
-										valueField: 70000,
-										visibility: false,
-										isTrueEdits: false,
-									},
-								},
-							},
-						},
-					},
+			// 						wages: {
+			// 							nameField: "Заработная плата",
+			// 							valueField: 70000,
+			// 							visibility: false,
+			// 							isTrueEdits: false,
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 		},
 
-					1: {
-						stageId: "2",
+			// 		1: {
+			// 			stageId: "2",
 
-						sortPositionStage: 1,
+			// 			sortPositionStage: 1,
 
-						nameStage: "123123123",
+			// 			nameStage: "123123123",
 
-						isActive: false,
+			// 			isActive: false,
 
-						arrUserStage: {
-							0: {
-								idUser: "1",
+			// 			arrUserStage: {
+			// 				0: {
+			// 					idUser: "1",
 
-								userName: "Менеджер",
+			// 					userName: "Менеджер",
 
-								sortPositionUser: 0,
+			// 					sortPositionUser: 0,
 
-								type: "outside",
+			// 					type: "outside",
 
-								infoFild: {
-									"hours-laid": {
-										nameField: "Часов заложено",
-										valueField: 112,
-										hintField: "Количество заложенных на задачу часов",
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 					infoFild: {
+			// 						"hours-laid": {
+			// 							nameField: "Часов заложено",
+			// 							valueField: 112,
+			// 							hintField: "Количество заложенных на задачу часов",
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"link-b24": {
-										nameField: "Ссылка на задачу в б24",
-										valueField: 111,
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"link-b24": {
+			// 							nameField: "Ссылка на задачу в б24",
+			// 							valueField: 111,
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"fact-clock": {
-										nameField: "Факт часов",
-										valueField: 80.5,
-										hintField: "Кол-во рабочих часов, по факту затраченных",
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"fact-clock": {
+			// 							nameField: "Факт часов",
+			// 							valueField: 80.5,
+			// 							hintField: "Кол-во рабочих часов, по факту затраченных",
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"external-bid": {
-										nameField: "Ставка (внеш), руб",
-										valueField: 1800,
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"external-bid": {
+			// 							nameField: "Ставка (внеш), руб",
+			// 							valueField: 1800,
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									wages: {
-										nameField: "Заработная плата",
-										valueField: 70000,
-										visibility: false,
-										isTrueEdits: false,
-									},
-								},
-							},
+			// 						wages: {
+			// 							nameField: "Заработная плата",
+			// 							valueField: 70000,
+			// 							visibility: false,
+			// 							isTrueEdits: false,
+			// 						},
+			// 					},
+			// 				},
 
-							1: {
-								idUser: "2",
+			// 				1: {
+			// 					idUser: "2",
 
-								userName: "Менеджер2",
+			// 					userName: "Менеджер2",
 
-								sortPositionUser: 1,
+			// 					sortPositionUser: 1,
 
-								type: "inside",
+			// 					type: "inside",
 
-								office: "officeMsk",
+			// 					office: "officeMsk",
 
-								infoFild: {
-									"hours-laid": {
-										nameField: "Часов заложено",
-										valueField: 112,
-										hintField: "Количество заложенных на задачу часов",
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 					infoFild: {
+			// 						"hours-laid": {
+			// 							nameField: "Часов заложено",
+			// 							valueField: 112,
+			// 							hintField: "Количество заложенных на задачу часов",
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"link-b24": {
-										nameField: "Ссылка на задачу в б24",
-										valueField: 111,
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"link-b24": {
+			// 							nameField: "Ссылка на задачу в б24",
+			// 							valueField: 111,
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"fact-clock": {
-										nameField: "Факт часов",
-										valueField: 80.5,
-										hintField: "Кол-во рабочих часов, по факту затраченных",
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"fact-clock": {
+			// 							nameField: "Факт часов",
+			// 							valueField: 80.5,
+			// 							hintField: "Кол-во рабочих часов, по факту затраченных",
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									"external-bid": {
-										nameField: "Ставка (внеш), руб",
-										valueField: 1800,
-										visibility: true,
-										isTrueEdits: true,
-									},
+			// 						"external-bid": {
+			// 							nameField: "Ставка (внеш), руб",
+			// 							valueField: 1800,
+			// 							visibility: true,
+			// 							isTrueEdits: true,
+			// 						},
 
-									wages: {
-										nameField: "Заработная плата",
-										valueField: 70000,
-										visibility: false,
-										isTrueEdits: false,
-									},
-								},
-							},
-						},
-					},
-				},
+			// 						wages: {
+			// 							nameField: "Заработная плата",
+			// 							valueField: 70000,
+			// 							visibility: false,
+			// 							isTrueEdits: false,
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 	},
 
-				managerList: {
-					0: {
-						idManager: "1",
-						isActive: true,
-						nameManager: "Менеджер 1",
-						sortPositionManager: 0,
-					},
+			// 	managerList: {
+			// 		0: {
+			// 			idManager: "1",
+			// 			isActive: true,
+			// 			nameManager: "Менеджер 1",
+			// 			sortPositionManager: 0,
+			// 		},
 
-					1: {
-						idManager: "2",
-						isActive: false,
-						nameManager: "Менеджер 2",
-						sortPositionManager: 1,
-					},
+			// 		1: {
+			// 			idManager: "2",
+			// 			isActive: false,
+			// 			nameManager: "Менеджер 2",
+			// 			sortPositionManager: 1,
+			// 		},
 
-					2: {
-						idManager: "3",
-						isActive: false,
-						nameManager: "Менеджер 3",
-						sortPositionManager: 2,
-					},
+			// 		2: {
+			// 			idManager: "3",
+			// 			isActive: false,
+			// 			nameManager: "Менеджер 3",
+			// 			sortPositionManager: 2,
+			// 		},
 
-					3: {
-						idManager: "4",
-						isActive: false,
-						nameManager: "Менеджер 4",
-						sortPositionManager: 3,
-					},
+			// 		3: {
+			// 			idManager: "4",
+			// 			isActive: false,
+			// 			nameManager: "Менеджер 4",
+			// 			sortPositionManager: 3,
+			// 		},
 
-					4: {
-						idManager: "5",
-						isActive: false,
-						nameManager: "Менеджер 5",
-						sortPositionManager: 4,
-					},
-				},
-			},
+			// 		4: {
+			// 			idManager: "5",
+			// 			isActive: false,
+			// 			nameManager: "Менеджер 5",
+			// 			sortPositionManager: 4,
+			// 		},
+			// 	},
+			// },
 		};
 	},
 
+	async created() {
+		await fetch("/js/data.json", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json; charset=UTF-8",
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				this.itemProject = data;
+
+				for (let key in this.itemProject.stageParam) {
+					let currentStage = this.itemProject.stageParam[key];
+
+					for (let i in currentStage.arrUserStage) {
+						let currentUser = currentStage.arrUserStage[i];
+
+						currentUser.userProp = this.calcUserParam(currentUser);
+					}
+
+					currentStage.stageProp = this.calcStageParam(currentStage);
+				}
+
+				this.itemProject.projectProp = this.calcProjectParam(this.itemProject);
+
+				this.isLoading = true;
+			});
+	},
+
 	methods: {
+		// Формулы
+		workingDays(objParam) {
+			return +(objParam.a / 7).toFixed(2);
+		},
+
+		paidСlient(objParam) {
+			return +(objParam.a * objParam.b).toFixed(2);
+		},
+
+		shipmentExternal(objParam) {
+			return +(objParam.a * 1800).toFixed(2);
+		},
+
+		difference(objParam) {
+			return +(objParam.a - objParam.b).toFixed(2);
+		},
+
+		wages(objParam, type = "inside") {
+			if (type === "inside") {
+				return +(objParam.a * (objParam.b / 22 / 7)).toFixed(2);
+			}
+
+			if (type === "outside") {
+				return +objParam.a.toFixed(2);
+			}
+		},
+
+		taxation(objParam) {
+			return +(objParam.a * 0.15).toFixed(2);
+		},
+
+		paymentSales(objParam) {
+			return +(objParam.a * 0.1).toFixed(2);
+		},
+
+		office(objParam, type = "inside") {
+			if (type === "inside") {
+				return +((objParam.a / objParam.b / 22) * objParam.c).toFixed(2);
+			}
+
+			if (type === "outside") {
+				return 0;
+			}
+		},
+
+		allCosts(objParam) {
+			return +(objParam.a + objParam.b + objParam.c + objParam.f).toFixed(2);
+		},
+
+		profit(objParam) {
+			return +(objParam.a - objParam.b).toFixed(2);
+		},
+
+		managerSalary(objParam) {
+			return +(objParam.a * 0.1).toFixed(2);
+		},
+
+		resultProfit(objParam) {
+			return +(objParam.a - objParam.b).toFixed(2);
+		},
+
+		profitability(objParam) {
+			return +((objParam.a * 100) / objParam.b).toFixed(0);
+		},
+
+		calcUserParam(currentUser) {
+			let hoursLaid = currentUser.infoFild["hours-laid"].valueField;
+			let externalBid = currentUser.infoFild["external-bid"].valueField;
+			let factClock = currentUser.infoFild["fact-clock"].valueField;
+			let wagesInfo = currentUser.infoFild["wages"].valueField;
+
+			let officePrice = currentUser.type == "inside" ? this.itemProject.globalParam.office[currentUser.office].price : 0;
+			let officePeople = currentUser.type == "inside" ? this.itemProject.globalParam.office[currentUser.office].people : 0;
+
+			let workingDays = this.workingDays({ a: hoursLaid }),
+				paidСlient = this.paidСlient({ a: hoursLaid, b: externalBid }),
+				shipmentExternal = this.shipmentExternal({ a: factClock }),
+				difference = this.difference({ a: paidСlient, b: shipmentExternal }),
+				wages = this.wages({ a: factClock, b: wagesInfo }, currentUser.type),
+				taxation = this.taxation({ a: paidСlient }),
+				office = this.office({ a: officePrice, b: officePeople, c: workingDays }, currentUser.type),
+				paymentSales = this.paymentSales({ a: paidСlient }),
+				allCosts = this.allCosts({ a: wages, b: taxation, c: paymentSales, f: office }),
+				profit = this.profit({ a: paidСlient, b: allCosts }),
+				managerSalary = this.managerSalary({ a: profit }),
+				resultProfit = this.resultProfit({ a: profit, b: managerSalary }),
+				profitability = this.profitability({ a: profit, b: paidСlient });
+
+			return {
+				"working-days": workingDays,
+				"paid-client": paidСlient,
+				"shipment-external": shipmentExternal,
+				difference: difference,
+				wages: wages,
+				taxation: taxation,
+				office: office,
+				"payment-sales": paymentSales,
+				"all-costs": allCosts,
+				profit: profit,
+				"manager-salary": managerSalary,
+				"result-profit": resultProfit,
+				profitability: profitability,
+			};
+		},
+
+		calcStageParam(currentStage) {
+			let hoursLaid = 0,
+				factClock = 0,
+				paidСlient = 0,
+				shipmentExternal = 0,
+				difference = 0,
+				wages = 0,
+				taxation = 0,
+				paymentSales = 0,
+				allCosts = 0,
+				profit = 0,
+				managerSalary = 0,
+				resultProfit = 0,
+				profitability = 0;
+
+			for (let key in currentStage.arrUserStage) {
+				hoursLaid += currentStage.arrUserStage[key].infoFild["hours-laid"].valueField;
+				factClock += currentStage.arrUserStage[key].infoFild["fact-clock"].valueField;
+				paidСlient += currentStage.arrUserStage[key].userProp["paid-client"];
+				shipmentExternal += currentStage.arrUserStage[key].userProp["shipment-external"];
+				difference += currentStage.arrUserStage[key].userProp["difference"];
+				wages += currentStage.arrUserStage[key].userProp["wages"];
+				taxation += currentStage.arrUserStage[key].userProp["taxation"];
+				paymentSales += currentStage.arrUserStage[key].userProp["payment-sales"];
+				allCosts += currentStage.arrUserStage[key].userProp["all-costs"];
+				profit += currentStage.arrUserStage[key].userProp["profit"];
+				managerSalary += currentStage.arrUserStage[key].userProp["manager-salary"];
+				(resultProfit = this.resultProfit({ a: profit, b: managerSalary })), (profitability = this.profitability({ a: profit, b: paidСlient }));
+			}
+
+			return {
+				"hours-laid": hoursLaid,
+				"fact-clock": factClock,
+				"paid-client": paidСlient,
+				"shipment-external": shipmentExternal,
+				difference: difference,
+				wages: wages,
+				taxation: taxation,
+				"payment-sales": paymentSales,
+				"all-costs": allCosts,
+				profit: profit,
+				"manager-salary": managerSalary,
+				"result-profit": resultProfit,
+				profitability: profitability,
+			};
+		},
+
+		calcProjectParam(project) {
+			let hoursLaid = 0,
+				factClock = 0,
+				paidСlient = 0,
+				shipmentExternal = 0,
+				difference = 0,
+				wages = 0,
+				taxation = 0,
+				paymentSales = 0,
+				allCosts = 0,
+				profit = 0,
+				managerSalary = 0,
+				resultProfit = 0,
+				profitability = 0;
+
+			for (let key in project.stageParam) {
+				hoursLaid += project.stageParam[key].stageProp["hours-laid"];
+				factClock += project.stageParam[key].stageProp["fact-clock"];
+				paidСlient += project.stageParam[key].stageProp["paid-client"];
+				shipmentExternal += project.stageParam[key].stageProp["shipment-external"];
+				difference += project.stageParam[key].stageProp["difference"];
+				wages += project.stageParam[key].stageProp["wages"];
+				taxation += project.stageParam[key].stageProp["taxation"];
+				paymentSales += project.stageParam[key].stageProp["payment-sales"];
+				allCosts += project.stageParam[key].stageProp["all-costs"];
+				profit += project.stageParam[key].stageProp["profit"];
+				managerSalary += project.stageParam[key].stageProp["manager-salary"];
+				(resultProfit = this.resultProfit({ a: profit, b: managerSalary })), (profitability = this.profitability({ a: profit, b: paidСlient }));
+			}
+
+			return {
+				"hours-laid": hoursLaid,
+				"fact-clock": factClock,
+				"paid-client": paidСlient,
+				"shipment-external": shipmentExternal,
+				difference: difference,
+				wages: wages,
+				taxation: taxation,
+				"payment-sales": paymentSales,
+				"all-costs": allCosts,
+				profit: profit,
+				"manager-salary": managerSalary,
+				"result-profit": resultProfit,
+				profitability: profitability,
+			};
+		},
+
+		calcUpdateParam(param) {
+			for (let key in this.itemProject.stageParam) {
+				let currentStage = this.itemProject.stageParam[key];
+
+				for (let i in currentStage.arrUserStage) {
+					let currentUser = currentStage.arrUserStage[i];
+
+					currentUser.userProp = this.calcUserParam(currentUser);
+				}
+
+				currentStage.stageProp = this.calcStageParam(currentStage);
+			}
+
+			this.itemProject.projectProp = this.calcProjectParam(this.itemProject);
+
+			console.log(this.itemProject);
+		},
+		///
+
+		// Изменение глобальных парамметров
 		editsFieldGlobal(advice) {
 			for (let key in advice) {
 				this.itemProject.globalParam.infoFild[key].valueField = advice[key].valueField;
 			}
 		},
 
+		// Изменение полей юзера
 		editsFieldStage(advice) {
 			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser]["infoFild"][advice.nameField].valueField = advice.valueField;
-			console.log(this.itemProject);
+
+			this.calcUpdateParam();
 		},
 
+		// Изменение имени участника этапа
 		changeUserParam(advice) {
 			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser].userName = advice.userName;
-			console.log(this.itemProject);
 		},
 
+		// Перемещение стадии
 		changeMoveStage(advice) {
 			let lengthObjStage = Object.keys(this.itemProject.stageParam).length;
 
@@ -1177,10 +1421,9 @@ const project = Vue.createApp({
 						break;
 				}
 			}
-
-			console.log(this.itemProject);
 		},
 
+		// Изменение навания стадии
 		changeNameStage(advice) {
 			this.itemProject.stageParam[advice.sortPositionStage].nameStage = advice.nameStage;
 		},
@@ -1201,17 +1444,14 @@ const project = Vue.createApp({
 
 				index++;
 			}
-
-			console.log(this.itemProject);
 		},
 
+		// Удалить юзера
 		changeDeleteStage(advice) {
-
 			for (let key in this.itemProject.stageParam) {
-
 				if (advice.sortPositionStage === parseInt(key)) {
 					if (this.itemProject.stageParam[advice.sortPositionStage].isActive === true) {
-						this.itemProject.stageParam[1] !== undefined ? this.itemProject.stageParam[1].isActive = true : null;
+						this.itemProject.stageParam[1] !== undefined ? (this.itemProject.stageParam[1].isActive = true) : null;
 					}
 				}
 
@@ -1225,10 +1465,9 @@ const project = Vue.createApp({
 					delete this.itemProject.stageParam[key];
 				}
 			}
-
-			console.log(this.itemProject);
 		},
 
+		// Добавить юзера
 		addUser(advice) {
 			let sortPositionUser = Object.keys(this.itemProject.stageParam[advice.sortPositionStage].arrUserStage).length;
 
@@ -1241,7 +1480,7 @@ const project = Vue.createApp({
 
 				type: advice.postUser,
 
-				office: advice.postUser === "inside" ?  "officeMsk" : null,
+				office: advice.postUser === "inside" ? "officeMsk" : null,
 
 				infoFild: {
 					"hours-laid": {
@@ -1276,15 +1515,14 @@ const project = Vue.createApp({
 
 					wages: {
 						nameField: "Заработная плата",
-						valueField: advice.postUser === "inside" ?  30000 : 0,
+						valueField: advice.postUser === "inside" ? 30000 : 0,
 						visibility: false,
 					},
 				},
 			};
-
-			console.log(this.itemProject);
 		},
 
+		// Добавить этап
 		addStage() {
 			let sortPositionStage = Object.keys(this.itemProject.stageParam).length;
 
@@ -1299,10 +1537,9 @@ const project = Vue.createApp({
 
 				arrUserStage: {},
 			};
-
-			console.log(this.itemProject.stageParam);
 		},
 
+		// Изменить активную стадию
 		changeActiveStage(advice) {
 			for (key in this.itemProject.stageParam) {
 				if (this.itemProject.stageParam[key].stageId === advice.stageId) {
@@ -1311,10 +1548,9 @@ const project = Vue.createApp({
 					this.itemProject.stageParam[key].isActive = false;
 				}
 			}
-
-			console.log(this.itemProject);
 		},
 
+		// Изменить активного менеджера
 		changeActiveManager(advice) {
 			for (key in this.itemProject.managerList) {
 				if (this.itemProject.managerList[key].idManager === advice.idManager) {
@@ -1323,13 +1559,11 @@ const project = Vue.createApp({
 					this.itemProject.managerList[key].isActive = false;
 				}
 			}
-
-			console.log(this.itemProject);
 		},
 
 		calcFieldProp(advice) {
 			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser].calcField = advice.propCalcField;
-		}
+		},
 	},
 
 	components: {

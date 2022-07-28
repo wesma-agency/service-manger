@@ -26,50 +26,51 @@
         </div>
 
         <section class="create-project">
-            <div class="create-project__global global-param">
-                <div class="global-param__row">
-                    <div class="global-param__column">
+            <template v-if="isLoading">
+                <div class="create-project__global global-param">
+                    <div class="global-param__row">
+                        <div class="global-param__column">
 
-                        <comp-global-param :objfield="itemProject"
-                            v-on:event-change-field="editsFieldGlobal">
-                        </comp-global-param>
-
-                    </div>
-
-                    <div class="global-param__column">
-                        <div class="global-param__action card-action">
-                            <div class="card-action__title title-h3">Действия</div>
-
-                            <div class="card-action__list">
-
-                                <comp-actvie-stage :objconfig="itemProject.stageParam"
-                                    v-on:event-change-active-stage="changeActiveStage"></comp-actvie-stage>
-
-                                <comp-actvie-manager :objconfig="itemProject.managerList"
-                                    v-on:event-change-active-manager="changeActiveManager"></comp-actvie-manager>
-                            </div>
-
-                            <div class="card-action__isactive">Проект активен</div>
-
-                            <div class="card-action__wrap-btn">
-                                <div class="card-action__btn main-btn">Активировать</div>
-                                <div class="card-action__btn main-btn --red">Завершить</div>
-                            </div>
+                            <comp-global-param :objfield="itemProject" v-on:event-change-field="editsFieldGlobal">
+                            </comp-global-param>
 
                         </div>
+
+                        <div class="global-param__column">
+                            <div class="global-param__action card-action">
+                                <div class="card-action__title title-h3">Действия</div>
+
+                                <div class="card-action__list">
+
+                                    <comp-actvie-stage :objconfig="itemProject.stageParam"
+                                        v-on:event-change-active-stage="changeActiveStage"></comp-actvie-stage>
+
+                                    <comp-actvie-manager :objconfig="itemProject.managerList"
+                                        v-on:event-change-active-manager="changeActiveManager"></comp-actvie-manager>
+                                </div>
+
+                                <div class="card-action__isactive">Проект активен</div>
+
+                                <div class="card-action__wrap-btn">
+                                    <div class="card-action__btn main-btn">Активировать</div>
+                                    <div class="card-action__btn main-btn --red">Завершить</div>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
+
                 </div>
 
-            </div>
+                <comp-stage v-for="(item, name, index) in itemProject.stageParam" :key="item.stageId"
+                    v-on:event-change-user-name="changeUserParam" v-on:event-change-field="editsFieldStage"
+                    v-on:event-move-stage="changeMoveStage" v-on:event-delete-stage="changeDeleteStage"
+                    v-on:event-change-namge-stage="changeNameStage" v-on:event-add-user="addUser"
+                    v-on:event-delete-user="deleteUser" v-on:event-calc-field-prop="calcFieldProp" :objconfig="item">
+                </comp-stage>
 
-            <comp-stage v-for="(item, name, index) in itemProject.stageParam" :key="item.stageId"
-                v-on:event-change-user-name="changeUserParam" v-on:event-change-field="editsFieldStage"
-                v-on:event-move-stage="changeMoveStage" v-on:event-delete-stage="changeDeleteStage"
-                v-on:event-change-namge-stage="changeNameStage" v-on:event-add-user="addUser"
-                v-on:event-delete-user="deleteUser" v-on:event-calc-field-prop="calcFieldProp" :objconfig="item">
-            </comp-stage>
-
-            <div class="create-project__add-stage main-btn" v-on:click="addStage">Добавить этап</div>
+                <div class="create-project__add-stage main-btn" v-on:click="addStage">Добавить этап</div>
+            </template>
         </section>
     </div>
 
