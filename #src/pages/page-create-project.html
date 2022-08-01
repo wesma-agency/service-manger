@@ -65,8 +65,9 @@
                 <comp-stage v-for="(item, name, index) in itemProject.stageParam" :key="item.stageId"
                     v-on:event-change-user-name="changeUserParam" v-on:event-change-field="editsFieldStage"
                     v-on:event-move-stage="changeMoveStage" v-on:event-delete-stage="changeDeleteStage"
-                    v-on:event-change-namge-stage="changeNameStage" v-on:event-add-user="addUser"
-                    v-on:event-delete-user="deleteUser" v-on:event-calc-field-prop="calcFieldProp" :objconfig="item">
+                    v-on:event-change-namge-stage="changeNameStage" v-on:event-add-user-inside="addUserInside"
+                    v-on:event-add-user-outside="addUserOutside" v-on:event-delete-user="deleteUser"
+                    v-on:event-select-item-event-handler="selectItemEventHandler" :objconfig="item">
                 </comp-stage>
 
                 <div class="create-project__add-stage main-btn" v-on:click="addStage">Добавить этап</div>

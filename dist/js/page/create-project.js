@@ -15,16 +15,30 @@ const globalParam = {
 	computed: {
 		propStageActive: {
 			get() {
-				for (let key in this.objfield.stageParam) {
-					if (this.objfield.stageParam[key].isActive === true) {
-						return {
-							profitability: this.objfield.projectProp.profitability,
-							profitabilityStage: this.objfield.stageParam[key].stageProp.profitability,
-							nameStage: this.objfield.stageParam[key].nameStage,
-							factClock: this.objfield.stageParam[key].stageProp["fact-clock"],
-							hoursLaid: this.objfield.stageParam[key].stageProp["hours-laid"],
-						};
+				if (Object.keys(this.objfield.stageParam).length) {
+					for (let key in this.objfield.stageParam) {
+						if (this.objfield.stageParam[key].isActive === true) {
+							return {
+								profitability: this.objfield.projectProp.resultField.profitability.valueField,
+								profitabilityStage: this.objfield.stageParam[key].stageProp.resultField.profitability.valueField,
+								nameStage: this.objfield.stageParam[key].nameStage,
+								factClock: this.objfield.stageParam[key].stageProp.infoFild["fact-clock"].valueField,
+								hoursLaid: this.objfield.stageParam[key].stageProp.infoFild["hours-laid"].valueField,
+								paidСlient: this.objfield.stageParam[key].stageProp.calcField["paid-client"].valueField,
+								taxation: this.objfield.stageParam[key].stageProp.calcField["taxation"].valueField,
+							};
+						}
 					}
+				} else {
+					return {
+						profitability: this.objfield.projectProp.resultField.profitability.valueField,
+						profitabilityStage: 0,
+						nameStage: 0,
+						factClock: 0,
+						hoursLaid: 0,
+						paidСlient: 0,
+						taxation: 0,
+					};
 				}
 			},
 		},
@@ -120,7 +134,7 @@ const globalParam = {
                         <div class="info-global__column">
                             <div class="info-global__option">
                                 <div class="info-global__option-name">Оплачено / затрачено внеш.:</div>
-                                <div class="info-global__option-value">570 000 / 345 433 руб.</div>
+                                <div class="info-global__option-value">{{propStageActive.paidСlient}} / {{propStageActive.taxation}} руб.</div>
                             </div>
                         </div>
 
@@ -145,287 +159,12 @@ const compUser = {
 		objuser: Object,
 	},
 
-	emits: ["eventChangeField", "eventChangeUserName", "eventDeleteUser", "eventCalcFieldProp"],
+	emits: ["eventChangeField", "eventChangeUserName", "eventDeleteUser", "eventSelectItemEventHandler"],
 
 	data() {
 		return {
-			calcField: {
-				"working-days": {
-					nameField: "Рабочих дней",
-					valueField: this.objuser.userProp["working-days"],
-					hintField: "Кол-во рабочих часов, по факту затраченных",
-					isTrueEdits: false,
-				},
-
-				wages: {
-					nameField: "Затраты",
-					valueField: this.objuser.userProp["wages"],
-					hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
-					isTrueEdits: this.objuser.type === "inside" ? false : this.objuser.type === "outside" ? true : false,
-				},
-
-				"paid-client": {
-					nameField: "Оплачено клиентом",
-					valueField: this.objuser.userProp["paid-client"],
-					hintField: "Сумма оплаченная по договору",
-					isTrueEdits: false,
-				},
-
-				taxation: {
-					nameField: "Налог",
-					valueField: this.objuser.userProp["taxation"],
-					hintField: "Налоги государству с прибыли",
-					isTrueEdits: false,
-				},
-
-				"shipment-external": {
-					nameField: "Отгрузка (внешняя)",
-					valueField: this.objuser.userProp["shipment-external"],
-					hintField: "Отгружено по фактическим часам",
-					isTrueEdits: false,
-					green: true,
-				},
-
-				office: {
-					nameField: "Офис",
-					valueField: this.objuser.userProp["office"],
-					hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
-					isTrueEdits: false,
-					green: true,
-				},
-
-				difference: {
-					nameField: "Разница оплотгруж",
-					valueField: this.objuser.userProp["difference"],
-					isTrueEdits: false,
-					green: true,
-				},
-
-				"payment-sales": {
-					nameField: "Выплата сейлзу",
-					valueField: this.objuser.userProp["payment-sales"],
-					isTrueEdits: false,
-					green: true,
-				},
-
-				"all-costs": {
-					nameField: "Всех затрат",
-					valueField: this.objuser.userProp["all-costs"],
-					hintField: "Всего затрат без менеджмента",
-					isTrueEdits: false,
-					green: true,
-				},
-			},
-
-			resultField: {
-				profit: {
-					nameField: "Прибыль",
-					valueField: this.objuser.userProp["profit"],
-					hintField: "Итоговая прибыль",
-				},
-
-				"manager-salary": {
-					nameField: "ЗП менеджера",
-					valueField: this.objuser.userProp["manager-salary"],
-				},
-
-				"result-profit": {
-					nameField: "Итого прибыль",
-					valueField: this.objuser.userProp["result-profit"],
-					hintField: "Прибыль по отделу.",
-				},
-
-				profitability: {
-					nameField: "Рент",
-					valueField: this.objuser.userProp["profitability"],
-					hintField: "Рентабельность конкретного сотрудника.",
-				},
-			},
+			userList: [],
 		};
-	},
-
-	computed: {
-		workingDays: {
-			get() {
-				return +(this.objuser.infoFild["hours-laid"].valueField / 7).toFixed(2);
-			},
-
-			set() {
-				this.calcField["working-days"].valueField = +(this.objuser.infoFild["hours-laid"].valueField / 7).toFixed(2);
-			},
-		},
-
-		paidСlient: {
-			get() {
-				return +(this.objuser.infoFild["hours-laid"].valueField * this.objuser.infoFild["external-bid"].valueField).toFixed(2);
-			},
-
-			set() {
-				this.calcField["paid-client"].valueField = +(this.objuser.infoFild["hours-laid"].valueField * this.objuser.infoFild["external-bid"].valueField).toFixed(2);
-			},
-		},
-
-		shipmentExternal: {
-			get() {
-				return +(this.objuser.infoFild["fact-clock"].valueField * 1800).toFixed(2);
-			},
-
-			set() {
-				this.calcField["shipment-external"].valueField = +(this.objuser.infoFild["fact-clock"].valueField * 1800).toFixed(2);
-			},
-		},
-
-		difference: {
-			get() {
-				return +(this.paidСlient - this.shipmentExternal).toFixed(2);
-			},
-
-			set() {
-				this.calcField["difference"].valueField = +(this.paidСlient - this.shipmentExternal).toFixed(2);
-			},
-		},
-
-		wages: {
-			get() {
-				if (this.objuser.type === "inside") {
-					return +(this.objuser.infoFild["fact-clock"].valueField * (this.objuser.infoFild["wages"].valueField / 22 / 7)).toFixed(2);
-				}
-
-				if (this.objuser.type === "outside") {
-					return +this.objuser.infoFild["wages"].valueField.toFixed(2);
-				}
-			},
-
-			set() {
-				if (this.objuser.type === "inside") {
-					this.calcField["wages"].valueField = +(this.objuser.infoFild["fact-clock"].valueField * (this.objuser.infoFild["wages"].valueField / 22 / 7)).toFixed(2);
-				}
-
-				if (this.objuser.type === "outside") {
-					this.calcField["wages"].valueField = +this.objuser.infoFild["wages"].valueField.toFixed(2);
-				}
-			},
-		},
-
-		taxation: {
-			get() {
-				return +(this.paidСlient * 0.15).toFixed(2);
-			},
-
-			set() {
-				this.calcField["taxation"].valueField = +(this.paidСlient * 0.15).toFixed(2);
-			},
-		},
-
-		paymentSales: {
-			get() {
-				return +(this.paidСlient * 0.1).toFixed(2);
-			},
-
-			set() {
-				this.calcField["payment-sales"].valueField = +(this.paidСlient * 0.15).toFixed(2);
-			},
-		},
-
-		office: {
-			get() {
-				if (this.objuser.type === "inside") {
-					return +((this.$root.$data.itemProject.globalParam.office[this.objuser.office].price / this.$root.$data.itemProject.globalParam.office[this.objuser.office].people / 22) * this.workingDays).toFixed(2);
-				}
-
-				if (this.objuser.type === "outside") {
-					return 0;
-				}
-			},
-
-			set() {
-				if (this.objuser.type === "inside") {
-					this.calcField["office"].valueField = +((this.$root.$data.itemProject.globalParam.office[this.objuser.office].price / this.$root.$data.itemProject.globalParam.office[this.objuser.office].people / 22) * this.workingDays).toFixed(2);
-				}
-
-				if (this.objuser.type === "outside") {
-					this.calcField["office"].valueField = 0;
-				}
-			},
-		},
-
-		allCosts: {
-			get() {
-				return +(this.wages + this.taxation + this.paymentSales + this.office).toFixed(2);
-			},
-
-			set() {
-				this.calcField["all-costs"].valueField = +(this.wages + this.taxation + this.paymentSales + this.office).toFixed(2);
-			},
-		},
-
-		profit: {
-			get() {
-				return +(this.paidСlient - this.allCosts).toFixed(2);
-			},
-
-			set() {
-				this.resultField["profit"].valueField = +(this.paidСlient - this.allCosts).toFixed(2);
-			},
-		},
-
-		managerSalary: {
-			get() {
-				return +(this.profit * 0.1).toFixed(2);
-			},
-
-			set() {
-				this.resultField["manager-salary"].valueField = +(this.profit * 0.1).toFixed(2);
-			},
-		},
-
-		resultProfit: {
-			get() {
-				return +(this.profit - this.managerSalary).toFixed(2);
-			},
-
-			set() {
-				this.resultField["result-profit"].valueField = +(this.profit - this.managerSalary).toFixed(2);
-			},
-		},
-
-		profitability: {
-			get() {
-				return +((this.profit * 100) / this.paidСlient).toFixed(0);
-			},
-
-			set() {
-				this.resultField["profitability"].valueField = +((this.profit * 100) / this.paidСlient).toFixed(0);
-			},
-		},
-
-		calcValue: {
-			get() {
-				let obJClalField = {
-					"working-days": this.workingDays,
-					"paid-client": this.paidСlient,
-					"shipment-external": this.shipmentExternal,
-					difference: this.difference,
-					wages: this.wages,
-					taxation: this.taxation,
-					office: this.office,
-					"payment-sales": this.paymentSales,
-					"all-costs": this.allCosts,
-					profit: this.profit,
-					"manager-salary": this.managerSalary,
-					"result-profit": this.resultProfit,
-					profitability: this.profitability,
-				};
-
-				this.$emit("eventCalcFieldProp", {
-					propCalcField: obJClalField,
-					idUser: this.objuser.idUser,
-					sortPositionUser: this.objuser.sortPositionUser,
-				});
-
-				return obJClalField;
-			},
-		},
 	},
 
 	methods: {
@@ -456,17 +195,52 @@ const compUser = {
 			};
 			this.$emit("eventChangeField", objUser);
 		},
+
+		selectItemEventHandler(event) {
+			let objUser = {
+				idUser: event.idUser,
+				sortPositionUser: this.objuser.sortPositionUser,
+				infoFild: event.infoFild,
+			};
+
+			this.$emit("eventSelectItemEventHandler", objUser);
+		},
+
+		itemProjectionFunction(item) {
+			return item.infoFild.nameUser.valueField;
+		},
+	},
+
+	created() {
+		for (let key in this.$root.$data.itemProject.userList) {
+			this.userList.push(this.$root.$data.itemProject.userList[key]);
+		}
+	},
+
+	components: {
+		SimpleTypeahead: Vue3SimpleTypeahead,
 	},
 
 	template: `
-        <div class="user-stage__item">
+        <div class="user-stage__item" >
             <div class="user-stage__row">
                 <div class="user-stage__column">
                     <div class="user-stage__info info-user-stage">
                         <div class="info-user-stage__group-name">
                             <div class="info-user-stage__name-number">{{ objuser.sortPositionUser + 1 }}</div>
                             <div class="info-user-stage__name-value">
-                                <input type="text" :value="objuser.userName" v-on:change="changeUserName">
+                                <input v-if="objuser.type ==  'outside'" type="text" :value="objuser.userName" v-on:change="changeUserName">
+
+								<SimpleTypeahead
+									v-if="objuser.type ==  'inside'"
+									:placeholder="objuser.userName"
+									:items="userList"
+									:minInputLength="1"
+									:itemProjection="itemProjectionFunction"
+									@selectItem="selectItemEventHandler"
+								>
+								</SimpleTypeahead>
+
                             </div>
                             <div class="info-user-stage__name-delete" v-on:click="deleteUserName"></div>
                         </div>
@@ -508,7 +282,7 @@ const compUser = {
 
                         <div class="calc-user-stage__list">
 
-							<template v-for="(item, name, i) in calcField" :key="i">
+							<template v-for="(item, name, i) in objuser.userProp.calcField" :key="i">
 								<div class="field-calc calc-user-stage__item" :class="[item.green? '--green' : '' ]">
 									<div class="field-calc__name">
 										<span>{{ item.nameField }}</span>
@@ -519,8 +293,8 @@ const compUser = {
 										</div>
 									</div>
 									<div class="field-calc__wrap-value" :class="[item.isTrueEdits? '--edits' : '' ]">
-										<div v-if="!item.isTrueEdits" class="field-calc__value">{{ objuser.userProp[name] }}</div>
-										<input v-if="item.isTrueEdits" class="field-calc__value --input" type="text" :value="calcField[name].valueField" v-on:change="editsField($event, {nameField: name})">
+										<div v-if="!item.isTrueEdits" class="field-calc__value">{{ item.valueField }}</div>
+										<input v-if="item.isTrueEdits" class="field-calc__value --input" type="text" :value="item.valueField" v-on:change="editsField($event, {nameField: name})">
 									</div>
 								</div>
 							</template>
@@ -534,7 +308,7 @@ const compUser = {
                         <div class="calc-user-stage__title">Итог</div>
 							<div class="calc-user-stage__list-result">
 
-							<template v-for="(item, name, i) in resultField" :key="i">
+							<template v-for="(item, name, i) in objuser.userProp.resultField" :key="i">
 								<div class="field-calc calc-user-stage__item-result">
 									<div class="field-calc__name">
 										<span>{{ item.nameField }}</span>
@@ -545,7 +319,7 @@ const compUser = {
 										</div>
 									</div>
 									<div class="field-calc__wrap-value">
-										<div class="field-calc__value">{{ resultField[name].valueField }}</div>
+										<div class="field-calc__value">{{ item.valueField }}</div>
 									</div>
 								</div>
 							</template>
@@ -563,7 +337,7 @@ const compStage = {
 		objconfig: Object,
 	},
 
-	emits: ["eventChangeField", "eventChangeUserName", "eventMoveStage", "eventDeleteStage", "eventChangeNamgeStage", "eventAddUser", "eventDeleteUser", "eventCalcFieldProp"],
+	emits: ["eventChangeField", "eventChangeUserName", "eventMoveStage", "eventDeleteStage", "eventChangeNamgeStage", "eventAddUserInside", "eventAddUserOutside", "eventDeleteUser", "eventSelectItemEventHandler"],
 
 	data() {
 		return {
@@ -610,13 +384,11 @@ const compStage = {
 			}
 		},
 
-		calcFieldProp(advice) {
+		selectItemEventHandler(advice) {
 			let objStage = advice;
-
 			objStage.stageId = this.objconfig.stageId;
 			objStage.sortPositionStage = this.objconfig.sortPositionStage;
-
-			this.$emit("eventCalcFieldProp", objStage);
+			this.$emit("eventSelectItemEventHandler", objStage);
 		},
 	},
 
@@ -647,14 +419,14 @@ const compStage = {
 
                         <div class="user-stage__list">
 
-                            <comp-user v-for="(item, name, index) in objconfig.arrUserStage" v-on:eventCalcFieldProp="calcFieldProp" v-on:eventDeleteUser="deleteUser" v-on:eventChangeUserName="changeUserName" v-on:eventChangeField="editsField" :objuser="item" :isedits="isEdits"></comp-user>
+                            <comp-user v-for="(item, name, index) in objconfig.arrUserStage" :key="index" v-on:eventDeleteUser="deleteUser" v-on:eventSelectItemEventHandler="selectItemEventHandler" v-on:eventChangeUserName="changeUserName" v-on:eventChangeField="editsField" :objuser="item" :isedits="isEdits"></comp-user>
 
                         </div>
 
                         <div class="user-stage__add-user add-user">
                             <div class="add-user__list">
-                                <div class="add-user__item" v-on:click="$emit('eventAddUser', { stageId: objconfig.stageId, sortPositionStage: objconfig.sortPositionStage, postUser: 'inside'})">+ ДОБАВИТЬ INSIDE СОТРУДНИКА</div>
-                                <div class="add-user__item" v-on:click="$emit('eventAddUser', { stageId: objconfig.stageId, sortPositionStage: objconfig.sortPositionStage, postUser: 'outside'})">+ ДОБАВИТЬ OUTSIDE ИСПОЛНИТЕЛЯ</div>
+                                <div class="add-user__item" v-on:click="$emit('eventAddUserInside', { stageId: objconfig.stageId, sortPositionStage: objconfig.sortPositionStage, postUser: 'inside'})">+ ДОБАВИТЬ INSIDE СОТРУДНИКА</div>
+                                <div class="add-user__item" v-on:click="$emit('eventAddUserOutside', { stageId: objconfig.stageId, sortPositionStage: objconfig.sortPositionStage, postUser: 'outside'})">+ ДОБАВИТЬ OUTSIDE ИСПОЛНИТЕЛЯ</div>
                             </div>
 
                             <div class="add-user__text">
@@ -1084,6 +856,69 @@ const project = Vue.createApp({
 			// 		},
 			// 	},
 
+			// 	userList: {
+			// 		0: {
+			// 			idUser: "1",
+			// 			sortPositionUser: 0,
+			// 			infoFild: {
+			// 				nameUser: {
+			// 					nameField: "Коношенко Павел",
+			// 					valueField: 70000,
+			// 				},
+
+			// 				idBitrix: {
+			// 					nameField: "ID Битрикс 24",
+			// 					valueField: 40,
+			// 				},
+
+			// 				wages: {
+			// 					nameField: "ЗП средняя, руб",
+			// 					valueField: 70000,
+			// 				},
+
+			// 				"external-bid": {
+			// 					nameField: "Ставка (внеш), руб",
+			// 					valueField: 1800,
+			// 				},
+
+			// 				office: {
+			// 					nameField: "Город офиса",
+			// 					valueField: "officeMsk",
+			// 				},
+			// 			},
+			// 		},
+			// 		1: {
+			// 			idUser: "2",
+			// 			sortPositionUser: 0,
+			// 			infoFild: {
+			// 				nameUser: {
+			// 					nameField: "Юзер 2",
+			// 					valueField: 70000,
+			// 				},
+
+			// 				idBitrix: {
+			// 					nameField: "ID Битрикс 24",
+			// 					valueField: 40,
+			// 				},
+
+			// 				wages: {
+			// 					nameField: "ЗП средняя, руб",
+			// 					valueField: 70000,
+			// 				},
+
+			// 				"external-bid": {
+			// 					nameField: "Ставка (внеш), руб",
+			// 					valueField: 1800,
+			// 				},
+
+			// 				office: {
+			// 					nameField: "Город офиса",
+			// 					valueField: "officeMsk",
+			// 				},
+			// 			},
+			// 		},
+			// 	},
+
 			// 	managerList: {
 			// 		0: {
 			// 			idManager: "1",
@@ -1135,19 +970,7 @@ const project = Vue.createApp({
 			.then((data) => {
 				this.itemProject = data;
 
-				for (let key in this.itemProject.stageParam) {
-					let currentStage = this.itemProject.stageParam[key];
-
-					for (let i in currentStage.arrUserStage) {
-						let currentUser = currentStage.arrUserStage[i];
-
-						currentUser.userProp = this.calcUserParam(currentUser);
-					}
-
-					currentStage.stageProp = this.calcStageParam(currentStage);
-				}
-
-				this.itemProject.projectProp = this.calcProjectParam(this.itemProject);
+				this.calcUpdateParam(this.itemProject);
 
 				this.isLoading = true;
 			});
@@ -1155,40 +978,49 @@ const project = Vue.createApp({
 
 	methods: {
 		// Формулы
+
+		//Рабочих дней
 		workingDays(objParam) {
 			return +(objParam.a / 7).toFixed(2);
 		},
 
+		//Оплачено клиентом
 		paidСlient(objParam) {
 			return +(objParam.a * objParam.b).toFixed(2);
 		},
 
+		//Отгрузка (внешняя)
 		shipmentExternal(objParam) {
 			return +(objParam.a * 1800).toFixed(2);
 		},
 
+		//Разница оплотгруж
 		difference(objParam) {
 			return +(objParam.a - objParam.b).toFixed(2);
 		},
 
+		//Затраты
 		wages(objParam, type = "inside") {
 			if (type === "inside") {
 				return +(objParam.a * (objParam.b / 22 / 7)).toFixed(2);
 			}
 
 			if (type === "outside") {
-				return +objParam.a.toFixed(2);
+				return +objParam.b.toFixed(2);
 			}
 		},
 
+		//Налог
 		taxation(objParam) {
 			return +(objParam.a * 0.15).toFixed(2);
 		},
 
+		//Выплата сейлзу
 		paymentSales(objParam) {
 			return +(objParam.a * 0.1).toFixed(2);
 		},
 
+		//Офис
 		office(objParam, type = "inside") {
 			if (type === "inside") {
 				return +((objParam.a / objParam.b / 22) * objParam.c).toFixed(2);
@@ -1199,22 +1031,27 @@ const project = Vue.createApp({
 			}
 		},
 
+		//Всех затрат
 		allCosts(objParam) {
 			return +(objParam.a + objParam.b + objParam.c + objParam.f).toFixed(2);
 		},
 
+		//Прибыль
 		profit(objParam) {
 			return +(objParam.a - objParam.b).toFixed(2);
 		},
 
+		//ЗП менеджера
 		managerSalary(objParam) {
 			return +(objParam.a * 0.1).toFixed(2);
 		},
 
+		//Итого прибыль
 		resultProfit(objParam) {
 			return +(objParam.a - objParam.b).toFixed(2);
 		},
 
+		//Рент
 		profitability(objParam) {
 			return +((objParam.a * 100) / objParam.b).toFixed(0);
 		},
@@ -1228,134 +1065,376 @@ const project = Vue.createApp({
 			let officePrice = currentUser.type == "inside" ? this.itemProject.globalParam.office[currentUser.office].price : 0;
 			let officePeople = currentUser.type == "inside" ? this.itemProject.globalParam.office[currentUser.office].people : 0;
 
-			let workingDays = this.workingDays({ a: hoursLaid }),
-				paidСlient = this.paidСlient({ a: hoursLaid, b: externalBid }),
-				shipmentExternal = this.shipmentExternal({ a: factClock }),
-				difference = this.difference({ a: paidСlient, b: shipmentExternal }),
-				wages = this.wages({ a: factClock, b: wagesInfo }, currentUser.type),
-				taxation = this.taxation({ a: paidСlient }),
-				office = this.office({ a: officePrice, b: officePeople, c: workingDays }, currentUser.type),
-				paymentSales = this.paymentSales({ a: paidСlient }),
-				allCosts = this.allCosts({ a: wages, b: taxation, c: paymentSales, f: office }),
-				profit = this.profit({ a: paidСlient, b: allCosts }),
-				managerSalary = this.managerSalary({ a: profit }),
-				resultProfit = this.resultProfit({ a: profit, b: managerSalary }),
-				profitability = this.profitability({ a: profit, b: paidСlient });
+			let workingDays = {
+				nameField: "Рабочих дней",
+				valueField: 0,
+				hintField: "Кол-во рабочих часов, по факту затраченных",
+				isTrueEdits: false,
+			};
+
+			let wages = {
+				nameField: "Затраты",
+				valueField: 0,
+				hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
+				isTrueEdits: currentUser.type === "inside" ? false : currentUser.type === "outside" ? true : false,
+			};
+
+			let paidСlient = {
+				nameField: "Оплачено клиентом",
+				valueField: 0,
+				hintField: "Сумма оплаченная по договору",
+				isTrueEdits: false,
+			};
+
+			let taxation = {
+				nameField: "Налог",
+				valueField: 0,
+				hintField: "Налоги государству с прибыли",
+				isTrueEdits: false,
+			};
+
+			let shipmentExternal = {
+				nameField: "Отгрузка (внешняя)",
+				valueField: 0,
+				hintField: "Отгружено по фактическим часам",
+				isTrueEdits: false,
+				green: true,
+			};
+
+			let office = {
+				nameField: "Офис",
+				valueField: 0,
+				hintField: "Налоги на сотрудника и косвенные платежи (аренда, канцелярия, интернет, еда и т.д)",
+				isTrueEdits: false,
+				green: true,
+			};
+
+			let difference = {
+				nameField: "Разница оплотгруж",
+				valueField: 0,
+				isTrueEdits: false,
+				green: true,
+			};
+
+			let paymentSales = {
+				nameField: "Выплата сейлзу",
+				valueField: 0,
+				isTrueEdits: false,
+				green: true,
+			};
+
+			let allCosts = {
+				nameField: "Всех затрат",
+				valueField: 0,
+				hintField: "Всего затрат без менеджмента",
+				isTrueEdits: false,
+				green: true,
+			};
+
+			let profit = {
+				nameField: "Прибыль",
+				valueField: 0,
+				hintField: "Итоговая прибыль",
+			};
+
+			let managerSalary = {
+				nameField: "ЗП менеджера",
+				valueField: 0,
+			};
+
+			let resultProfit = {
+				nameField: "Итого прибыль",
+				valueField: 0,
+				hintField: "Прибыль по отделу.",
+			};
+
+			let profitability = {
+				nameField: "Рент",
+				valueField: 0,
+				hintField: "Рентабельность конкретного сотрудника.",
+			};
+
+			workingDays.valueField = this.workingDays({ a: hoursLaid });
+			wages.valueField = this.wages({ a: factClock, b: wagesInfo }, currentUser.type);
+			paidСlient.valueField = this.paidСlient({ a: hoursLaid, b: externalBid });
+			taxation.valueField = this.taxation({ a: paidСlient.valueField });
+			shipmentExternal.valueField = this.shipmentExternal({ a: factClock });
+			office.valueField = this.office({ a: officePrice, b: officePeople, c: workingDays.valueField }, currentUser.type);
+			difference.valueField = this.difference({ a: paidСlient.valueField, b: shipmentExternal.valueField });
+			paymentSales.valueField = this.paymentSales({ a: paidСlient.valueField });
+			allCosts.valueField = this.allCosts({ a: wages.valueField, b: taxation.valueField, c: paymentSales.valueField, f: office.valueField });
+			profit.valueField = this.profit({ a: paidСlient.valueField, b: allCosts.valueField });
+			managerSalary.valueField = this.managerSalary({ a: profit.valueField });
+			resultProfit.valueField = this.resultProfit({ a: profit.valueField, b: managerSalary.valueField });
+			profitability.valueField = this.profitability({ a: profit.valueField, b: paidСlient.valueField });
 
 			return {
-				"working-days": workingDays,
-				"paid-client": paidСlient,
-				"shipment-external": shipmentExternal,
-				difference: difference,
-				wages: wages,
-				taxation: taxation,
-				office: office,
-				"payment-sales": paymentSales,
-				"all-costs": allCosts,
-				profit: profit,
-				"manager-salary": managerSalary,
-				"result-profit": resultProfit,
-				profitability: profitability,
+				calcField: {
+					"working-days": workingDays,
+					wages: wages,
+					"paid-client": paidСlient,
+					taxation: taxation,
+					"shipment-external": shipmentExternal,
+					office: office,
+					difference: difference,
+					"payment-sales": paymentSales,
+					"all-costs": allCosts,
+				},
+
+				resultField: {
+					profit: profit,
+					"manager-salary": managerSalary,
+					"result-profit": resultProfit,
+					profitability: profitability,
+				},
 			};
 		},
 
 		calcStageParam(currentStage) {
-			let hoursLaid = 0,
-				factClock = 0,
-				paidСlient = 0,
-				shipmentExternal = 0,
-				difference = 0,
-				wages = 0,
-				taxation = 0,
-				paymentSales = 0,
-				allCosts = 0,
-				profit = 0,
-				managerSalary = 0,
-				resultProfit = 0,
-				profitability = 0;
+			let hoursLaid = {
+				nameField: "Часов заложено",
+				valueField: 0,
+				hintField: "Количество заложенных на задачу часов",
+			};
 
-			for (let key in currentStage.arrUserStage) {
-				hoursLaid += currentStage.arrUserStage[key].infoFild["hours-laid"].valueField;
-				factClock += currentStage.arrUserStage[key].infoFild["fact-clock"].valueField;
-				paidСlient += currentStage.arrUserStage[key].userProp["paid-client"];
-				shipmentExternal += currentStage.arrUserStage[key].userProp["shipment-external"];
-				difference += currentStage.arrUserStage[key].userProp["difference"];
-				wages += currentStage.arrUserStage[key].userProp["wages"];
-				taxation += currentStage.arrUserStage[key].userProp["taxation"];
-				paymentSales += currentStage.arrUserStage[key].userProp["payment-sales"];
-				allCosts += currentStage.arrUserStage[key].userProp["all-costs"];
-				profit += currentStage.arrUserStage[key].userProp["profit"];
-				managerSalary += currentStage.arrUserStage[key].userProp["manager-salary"];
-				(resultProfit = this.resultProfit({ a: profit, b: managerSalary })), (profitability = this.profitability({ a: profit, b: paidСlient }));
+			let factClock = {
+				nameField: "Факт часов",
+				valueField: 0,
+				hintField: "Кол-во рабочих часов, по факту затраченных",
+			};
+
+			let wages = {
+				nameField: "Затраты",
+				valueField: 0,
+				hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
+			};
+
+			let paidСlient = {
+				nameField: "Оплачено клиентом",
+				valueField: 0,
+				hintField: "Сумма оплаченная по договору",
+			};
+
+			let taxation = {
+				nameField: "Налог",
+				valueField: 0,
+				hintField: "Налоги государству с прибыли",
+			};
+
+			let shipmentExternal = {
+				nameField: "Отгрузка (внешняя)",
+				valueField: 0,
+				hintField: "Отгружено по фактическим часам",
+			};
+
+			let difference = {
+				nameField: "Разница оплотгруж",
+				valueField: 0,
+			};
+
+			let paymentSales = {
+				nameField: "Выплата сейлзу",
+				valueField: 0,
+			};
+
+			let allCosts = {
+				nameField: "Всех затрат",
+				valueField: 0,
+				hintField: "Всего затрат без менеджмента",
+			};
+
+			let profit = {
+				nameField: "Прибыль",
+				valueField: 0,
+				hintField: "Итоговая прибыль",
+			};
+
+			let managerSalary = {
+				nameField: "ЗП менеджера",
+				valueField: 0,
+			};
+
+			let resultProfit = {
+				nameField: "Итого прибыль",
+				valueField: 0,
+				hintField: "Прибыль по отделу.",
+			};
+
+			let profitability = {
+				nameField: "Рент",
+				valueField: 0,
+				hintField: "Рентабельность конкретного сотрудника.",
+			};
+
+			if (Object.keys(currentStage.arrUserStage).length > 0) {
+				for (let key in currentStage.arrUserStage) {
+					hoursLaid.valueField += currentStage.arrUserStage[key].infoFild["hours-laid"].valueField;
+					factClock.valueField += currentStage.arrUserStage[key].infoFild["fact-clock"].valueField;
+
+					paidСlient.valueField += currentStage.arrUserStage[key].userProp.calcField["paid-client"].valueField;
+					shipmentExternal.valueField += currentStage.arrUserStage[key].userProp.calcField["shipment-external"].valueField;
+					difference.valueField += currentStage.arrUserStage[key].userProp.calcField["difference"].valueField;
+					wages.valueField += currentStage.arrUserStage[key].userProp.calcField["wages"].valueField;
+					taxation.valueField += currentStage.arrUserStage[key].userProp.calcField["taxation"].valueField;
+					paymentSales.valueField += currentStage.arrUserStage[key].userProp.calcField["payment-sales"].valueField;
+					allCosts.valueField += currentStage.arrUserStage[key].userProp.calcField["all-costs"].valueField;
+
+					profit.valueField += currentStage.arrUserStage[key].userProp.resultField["profit"].valueField;
+					managerSalary.valueField += currentStage.arrUserStage[key].userProp.resultField["manager-salary"].valueField;
+					resultProfit.valueField = this.resultProfit({ a: profit.valueField, b: managerSalary.valueField });
+					profitability.valueField = this.profitability({ a: profit.valueField, b: paidСlient.valueField });
+				}
 			}
 
 			return {
-				"hours-laid": hoursLaid,
-				"fact-clock": factClock,
-				"paid-client": paidСlient,
-				"shipment-external": shipmentExternal,
-				difference: difference,
-				wages: wages,
-				taxation: taxation,
-				"payment-sales": paymentSales,
-				"all-costs": allCosts,
-				profit: profit,
-				"manager-salary": managerSalary,
-				"result-profit": resultProfit,
-				profitability: profitability,
+				infoFild: {
+					"hours-laid": hoursLaid,
+					"fact-clock": factClock,
+				},
+
+				calcField: {
+					"paid-client": paidСlient,
+					"shipment-external": shipmentExternal,
+					difference: difference,
+					wages: wages,
+					taxation: taxation,
+					"payment-sales": paymentSales,
+					"all-costs": allCosts,
+				},
+
+				resultField: {
+					profit: profit,
+					"manager-salary": managerSalary,
+					"result-profit": resultProfit,
+					profitability: profitability,
+				},
 			};
 		},
 
 		calcProjectParam(project) {
-			let hoursLaid = 0,
-				factClock = 0,
-				paidСlient = 0,
-				shipmentExternal = 0,
-				difference = 0,
-				wages = 0,
-				taxation = 0,
-				paymentSales = 0,
-				allCosts = 0,
-				profit = 0,
-				managerSalary = 0,
-				resultProfit = 0,
-				profitability = 0;
+			let hoursLaid = {
+				nameField: "Часов заложено",
+				valueField: 0,
+				hintField: "Количество заложенных на задачу часов",
+			};
 
-			for (let key in project.stageParam) {
-				hoursLaid += project.stageParam[key].stageProp["hours-laid"];
-				factClock += project.stageParam[key].stageProp["fact-clock"];
-				paidСlient += project.stageParam[key].stageProp["paid-client"];
-				shipmentExternal += project.stageParam[key].stageProp["shipment-external"];
-				difference += project.stageParam[key].stageProp["difference"];
-				wages += project.stageParam[key].stageProp["wages"];
-				taxation += project.stageParam[key].stageProp["taxation"];
-				paymentSales += project.stageParam[key].stageProp["payment-sales"];
-				allCosts += project.stageParam[key].stageProp["all-costs"];
-				profit += project.stageParam[key].stageProp["profit"];
-				managerSalary += project.stageParam[key].stageProp["manager-salary"];
-				(resultProfit = this.resultProfit({ a: profit, b: managerSalary })), (profitability = this.profitability({ a: profit, b: paidСlient }));
+			let factClock = {
+				nameField: "Факт часов",
+				valueField: 0,
+				hintField: "Кол-во рабочих часов, по факту затраченных",
+			};
+
+			let wages = {
+				nameField: "Затраты",
+				valueField: 0,
+				hintField: "Стоимость работ по внутренней ставке штатного специалиста или затрата на outside",
+			};
+
+			let paidСlient = {
+				nameField: "Оплачено клиентом",
+				valueField: 0,
+				hintField: "Сумма оплаченная по договору",
+			};
+
+			let taxation = {
+				nameField: "Налог",
+				valueField: 0,
+				hintField: "Налоги государству с прибыли",
+			};
+
+			let shipmentExternal = {
+				nameField: "Отгрузка (внешняя)",
+				valueField: 0,
+				hintField: "Отгружено по фактическим часам",
+			};
+
+			let difference = {
+				nameField: "Разница оплотгруж",
+				valueField: 0,
+			};
+
+			let paymentSales = {
+				nameField: "Выплата сейлзу",
+				valueField: 0,
+			};
+
+			let allCosts = {
+				nameField: "Всех затрат",
+				valueField: 0,
+				hintField: "Всего затрат без менеджмента",
+			};
+
+			let profit = {
+				nameField: "Прибыль",
+				valueField: 0,
+				hintField: "Итоговая прибыль",
+			};
+
+			let managerSalary = {
+				nameField: "ЗП менеджера",
+				valueField: 0,
+			};
+
+			let resultProfit = {
+				nameField: "Итого прибыль",
+				valueField: 0,
+				hintField: "Прибыль по отделу.",
+			};
+
+			let profitability = {
+				nameField: "Рент",
+				valueField: 0,
+				hintField: "Рентабельность конкретного сотрудника.",
+			};
+
+			if (Object.keys(project.stageParam).length > 0) {
+				for (let key in project.stageParam) {
+					hoursLaid.valueField += project.stageParam[key].stageProp.infoFild["hours-laid"].valueField;
+					factClock.valueField += project.stageParam[key].stageProp.infoFild["fact-clock"].valueField;
+
+					paidСlient.valueField += project.stageParam[key].stageProp.calcField["paid-client"].valueField;
+					shipmentExternal.valueField += project.stageParam[key].stageProp.calcField["shipment-external"].valueField;
+					difference.valueField += project.stageParam[key].stageProp.calcField["difference"].valueField;
+					wages.valueField += project.stageParam[key].stageProp.calcField["wages"].valueField;
+					taxation.valueField += project.stageParam[key].stageProp.calcField["taxation"].valueField;
+					paymentSales.valueField += project.stageParam[key].stageProp.calcField["payment-sales"].valueField;
+					allCosts.valueField += project.stageParam[key].stageProp.calcField["all-costs"].valueField;
+
+					profit.valueField += project.stageParam[key].stageProp.resultField["profit"].valueField;
+					managerSalary.valueField += project.stageParam[key].stageProp.resultField["manager-salary"].valueField;
+					resultProfit.valueField = this.resultProfit({ a: profit.valueField, b: managerSalary.valueField });
+					profitability.valueField = this.profitability({ a: profit.valueField, b: paidСlient.valueField });
+				}
 			}
 
 			return {
-				"hours-laid": hoursLaid,
-				"fact-clock": factClock,
-				"paid-client": paidСlient,
-				"shipment-external": shipmentExternal,
-				difference: difference,
-				wages: wages,
-				taxation: taxation,
-				"payment-sales": paymentSales,
-				"all-costs": allCosts,
-				profit: profit,
-				"manager-salary": managerSalary,
-				"result-profit": resultProfit,
-				profitability: profitability,
+				infoFild: {
+					"hours-laid": hoursLaid,
+					"fact-clock": factClock,
+				},
+
+				calcField: {
+					"paid-client": paidСlient,
+					"shipment-external": shipmentExternal,
+					difference: difference,
+					wages: wages,
+					taxation: taxation,
+					"payment-sales": paymentSales,
+					"all-costs": allCosts,
+				},
+
+				resultField: {
+					profit: profit,
+					"manager-salary": managerSalary,
+					"result-profit": resultProfit,
+					profitability: profitability,
+				},
 			};
 		},
 
-		calcUpdateParam(param) {
-			for (let key in this.itemProject.stageParam) {
-				let currentStage = this.itemProject.stageParam[key];
+		calcUpdateParam(project) {
+			for (let key in project.stageParam) {
+				let currentStage = project.stageParam[key];
 
 				for (let i in currentStage.arrUserStage) {
 					let currentUser = currentStage.arrUserStage[i];
@@ -1366,7 +1445,7 @@ const project = Vue.createApp({
 				currentStage.stageProp = this.calcStageParam(currentStage);
 			}
 
-			this.itemProject.projectProp = this.calcProjectParam(this.itemProject);
+			project.projectProp = this.calcProjectParam(project);
 
 			console.log(this.itemProject);
 		},
@@ -1383,7 +1462,7 @@ const project = Vue.createApp({
 		editsFieldStage(advice) {
 			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser]["infoFild"][advice.nameField].valueField = advice.valueField;
 
-			this.calcUpdateParam();
+			this.calcUpdateParam(this.itemProject);
 		},
 
 		// Изменение имени участника этапа
@@ -1428,6 +1507,7 @@ const project = Vue.createApp({
 			this.itemProject.stageParam[advice.sortPositionStage].nameStage = advice.nameStage;
 		},
 
+		// Удалить юзера
 		deleteUser(advice) {
 			let index = 0;
 
@@ -1444,9 +1524,11 @@ const project = Vue.createApp({
 
 				index++;
 			}
+
+			this.calcUpdateParam(this.itemProject);
 		},
 
-		// Удалить юзера
+		// Удалить стадию
 		changeDeleteStage(advice) {
 			for (let key in this.itemProject.stageParam) {
 				if (advice.sortPositionStage === parseInt(key)) {
@@ -1465,10 +1547,11 @@ const project = Vue.createApp({
 					delete this.itemProject.stageParam[key];
 				}
 			}
+			this.calcUpdateParam(this.itemProject);
 		},
 
-		// Добавить юзера
-		addUser(advice) {
+		// Добавить Inside юзера
+		addUserInside(advice) {
 			let sortPositionUser = Object.keys(this.itemProject.stageParam[advice.sortPositionStage].arrUserStage).length;
 
 			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[sortPositionUser] = {
@@ -1480,7 +1563,7 @@ const project = Vue.createApp({
 
 				type: advice.postUser,
 
-				office: advice.postUser === "inside" ? "officeMsk" : null,
+				office: "officeBrynsk",
 
 				infoFild: {
 					"hours-laid": {
@@ -1515,11 +1598,70 @@ const project = Vue.createApp({
 
 					wages: {
 						nameField: "Заработная плата",
-						valueField: advice.postUser === "inside" ? 30000 : 0,
+						valueField: 0,
 						visibility: false,
 					},
 				},
 			};
+
+			this.calcUpdateParam(this.itemProject);
+		},
+
+		// Добавить Outside юзера
+		addUserOutside(advice) {
+			let sortPositionUser = Object.keys(this.itemProject.stageParam[advice.sortPositionStage].arrUserStage).length;
+
+			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[sortPositionUser] = {
+				idUser: `${new Date().getTime()}`,
+
+				sortPositionUser: sortPositionUser,
+
+				userName: "",
+
+				type: advice.postUser,
+
+				office: null,
+
+				infoFild: {
+					"hours-laid": {
+						nameField: "Часов заложено",
+						valueField: 0,
+						hintField: "Количество заложенных на задачу часов",
+						visibility: true,
+						isTrueEdits: true,
+					},
+
+					"link-b24": {
+						nameField: "Ссылка на задачу в б24",
+						valueField: "",
+						visibility: true,
+						isTrueEdits: true,
+					},
+
+					"fact-clock": {
+						nameField: "Факт часов",
+						valueField: 0,
+						hintField: "Кол-во рабочих часов, по факту затраченных",
+						visibility: true,
+						isTrueEdits: true,
+					},
+
+					"external-bid": {
+						nameField: "Ставка (внеш), руб",
+						valueField: 0,
+						visibility: true,
+						isTrueEdits: true,
+					},
+
+					wages: {
+						nameField: "Заработная плата",
+						valueField: 0,
+						visibility: false,
+					},
+				},
+			};
+
+			this.calcUpdateParam(this.itemProject);
 		},
 
 		// Добавить этап
@@ -1533,10 +1675,12 @@ const project = Vue.createApp({
 
 				nameStage: "Новый этап",
 
-				isActive: false,
+				isActive: Object.keys(this.itemProject.stageParam).length == 0 ? true : false,
 
 				arrUserStage: {},
 			};
+
+			this.calcUpdateParam(this.itemProject);
 		},
 
 		// Изменить активную стадию
@@ -1561,8 +1705,15 @@ const project = Vue.createApp({
 			}
 		},
 
-		calcFieldProp(advice) {
-			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser].calcField = advice.propCalcField;
+		//
+		selectItemEventHandler(advice) {
+			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser].infoFild["external-bid"].valueField = advice.infoFild["external-bid"].valueField;
+			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser].infoFild["wages"].valueField = advice.infoFild["wages"].valueField;
+			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser].office = advice.infoFild["office"].valueField;
+			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser].userName = advice.infoFild["nameUser"].valueField;
+			this.itemProject.stageParam[advice.sortPositionStage].arrUserStage[advice.sortPositionUser].idUser = advice["idUser"];
+
+			this.calcUpdateParam(this.itemProject);
 		},
 	},
 
