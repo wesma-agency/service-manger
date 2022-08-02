@@ -1446,8 +1446,6 @@ const project = Vue.createApp({
 			}
 
 			project.projectProp = this.calcProjectParam(project);
-
-			console.log(this.itemProject);
 		},
 		///
 
@@ -1531,7 +1529,7 @@ const project = Vue.createApp({
 		// Удалить стадию
 		changeDeleteStage(advice) {
 			for (let key in this.itemProject.stageParam) {
-				if (advice.sortPositionStage === parseInt(key)) {
+				if (advice.stageId === this.itemProject.stageParam[key].stageId) {
 					if (this.itemProject.stageParam[advice.sortPositionStage].isActive === true) {
 						this.itemProject.stageParam[1] !== undefined ? (this.itemProject.stageParam[1].isActive = true) : null;
 					}

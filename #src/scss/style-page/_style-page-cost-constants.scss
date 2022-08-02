@@ -94,7 +94,7 @@
 .table-constants {
 	&__caption {
 		display: grid;
-		grid-template-columns: 1fr 0.25fr 0.35fr 0.25fr 0.25fr 0.25fr 0.15fr;
+		grid-template-columns: 1fr 0.25fr 0.35fr 0.25fr 0.25fr 0.25fr 60px;
 	}
 
 	&__title {
@@ -146,11 +146,32 @@
 			font-weight: bold;
 		}
 	}
+
+	&.--col-3 {
+		& .table-constants__caption {
+			grid-template-columns: 1fr 0.2fr 60px;
+		}
+
+		& .constants-field {
+			grid-template-columns: 1fr 0.2fr 60px;
+		}
+	}
+
+	&.--col-4 {
+		& .table-constants__caption {
+			grid-template-columns: 1fr 0.3fr 0.2fr 60px;
+		}
+
+		& .constants-field {
+			grid-template-columns: 1fr 0.3fr 0.2fr 60px;
+		}
+	}
 }
 
 .constants-field {
+	cursor: pointer;
 	display: grid;
-	grid-template-columns: 1fr 0.25fr 0.35fr 0.25fr 0.25fr 0.25fr 0.15fr;
+	grid-template-columns: 1fr 0.25fr 0.35fr 0.25fr 0.25fr 0.25fr 60px;
 
 	&:first-child {
 		& .constants-field__item {
@@ -168,8 +189,13 @@
 		padding: 5px 10px;
 		border: 2px solid #fff;
 		background: #e9ebf7;
+		transition: all 0.3s ease;
 		&:not(:first-child) {
 			text-align: center;
+
+			& input {
+				text-align: center;
+			}
 		}
 		&:first-child {
 			display: flex;
@@ -182,6 +208,11 @@
 			justify-content: center;
 			border-right-width: 0;
 		}
+
+		& input {
+			width: 100%;
+			background: none;
+		}
 	}
 
 	&__item-drop {
@@ -192,10 +223,36 @@
 	&__item-edits {
 		cursor: pointer;
 		margin-right: 11px;
+
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.3s ease;
 	}
 
 	&__item-delete {
 		cursor: pointer;
+
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.3s ease;
+	}
+
+	&:hover {
+		& .constants-field {
+			&__item {
+				background: #d4d8ee;
+			}
+
+			&__item-edits {
+				opacity: 1;
+				visibility: visible;
+			}
+
+			&__item-delete {
+				opacity: 1;
+				visibility: visible;
+			}
+		}
 	}
 }
 

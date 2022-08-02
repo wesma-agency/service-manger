@@ -1545,7 +1545,7 @@ body.lock {
 
 .table-constants__caption {
   display: grid;
-  grid-template-columns: 1fr 0.25fr 0.35fr 0.25fr 0.25fr 0.25fr 0.15fr; }
+  grid-template-columns: 1fr 0.25fr 0.35fr 0.25fr 0.25fr 0.25fr 60px; }
 
 .table-constants__title {
   white-space: nowrap;
@@ -1594,9 +1594,22 @@ body.lock {
   .table-constants__hours span {
     font-weight: bold; }
 
+.table-constants.--col-3 .table-constants__caption {
+  grid-template-columns: 1fr 0.2fr 60px; }
+
+.table-constants.--col-3 .constants-field {
+  grid-template-columns: 1fr 0.2fr 60px; }
+
+.table-constants.--col-4 .table-constants__caption {
+  grid-template-columns: 1fr 0.3fr 0.2fr 60px; }
+
+.table-constants.--col-4 .constants-field {
+  grid-template-columns: 1fr 0.3fr 0.2fr 60px; }
+
 .constants-field {
+  cursor: pointer;
   display: grid;
-  grid-template-columns: 1fr 0.25fr 0.35fr 0.25fr 0.25fr 0.25fr 0.15fr; }
+  grid-template-columns: 1fr 0.25fr 0.35fr 0.25fr 0.25fr 0.25fr 60px; }
   .constants-field:first-child .constants-field__item {
     border-top-width: 0; }
   .constants-field:last-child .constants-field__item {
@@ -1604,9 +1617,14 @@ body.lock {
   .constants-field__item {
     padding: 5px 10px;
     border: 2px solid #fff;
-    background: #e9ebf7; }
+    background: #e9ebf7;
+    -webkit-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease; }
     .constants-field__item:not(:first-child) {
       text-align: center; }
+      .constants-field__item:not(:first-child) input {
+        text-align: center; }
     .constants-field__item:first-child {
       display: -webkit-box;
       display: -ms-flexbox;
@@ -1626,14 +1644,35 @@ body.lock {
           -ms-flex-pack: center;
               justify-content: center;
       border-right-width: 0; }
+    .constants-field__item input {
+      width: 100%;
+      background: none; }
   .constants-field__item-drop {
     cursor: pointer;
     margin-right: 11px; }
   .constants-field__item-edits {
     cursor: pointer;
-    margin-right: 11px; }
+    margin-right: 11px;
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease; }
   .constants-field__item-delete {
-    cursor: pointer; }
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease; }
+  .constants-field:hover .constants-field__item {
+    background: #d4d8ee; }
+  .constants-field:hover .constants-field__item-edits {
+    opacity: 1;
+    visibility: visible; }
+  .constants-field:hover .constants-field__item-delete {
+    opacity: 1;
+    visibility: visible; }
 
 .standart-constants {
   padding: 25px 25px 45px 25px;
