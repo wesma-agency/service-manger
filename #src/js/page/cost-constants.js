@@ -31,7 +31,7 @@ const compFieldConts = {
 		},
 
 		editsFieldValue(event, name) {
-			this.newValField.fieldValue[name] = event.target.value;
+			this.newValField.fieldValue[name] = +(+event.target.value).toFixed(2);
 		},
 
 		deleteField() {
@@ -125,6 +125,25 @@ const compMainConts = {
 		},
 	},
 
+	computed: {
+		allHours() {
+			let allHours = 0;
+			for (let key in this.objparam.arrField) {
+				for (let i in this.objparam.arrField[key].fieldValue) {
+					if (i !== "nameField") {
+						allHours += this.objparam.arrField[key].fieldValue[i];
+					}
+				}
+			}
+
+			return allHours;
+		},
+
+		allPrice() {
+			return this.allHours * this.$root.$data.costConstants.standartConst[0].fieldValue;
+		},
+	},
+
 	components: {
 		"comp-field-conts": compFieldConts,
 	},
@@ -177,10 +196,9 @@ const compMainConts = {
 				<div class="table-constants__add-field" v-on:click="$emit('eventAddFieldMainConts', { sortPosition: objparam.sortPosition })">+ ДОБАВИТЬ ПОЛЕ</div>
 
 				<div class="table-constants__result-group">
-					<div class="table-constants__coast">Общая стоимость сметы - <span>1 031 940
-							руб</span></div>
+					<div class="table-constants__coast">Общая стоимость сметы - <span> {{ allPrice }} руб</span></div>
 					<div class="table-constants__hours">Всего часов (включая менеджмент и QA) -
-						<span>573,3</span>
+						<span>{{ allHours }}</span>
 					</div>
 				</div>
 			</div>

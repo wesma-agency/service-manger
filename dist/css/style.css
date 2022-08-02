@@ -668,7 +668,7 @@ body.lock {
     font-size: 13px;
     line-height: 120%;
     color: #000;
-    border: 1px solid #E9EBF7;
+    border: 1px solid #e9ebf7;
     border-radius: 20px; }
     .filter-project__name::before {
       content: "";
@@ -700,7 +700,7 @@ body.lock {
     left: 0;
     min-width: 200px;
     padding: 15px;
-    border: 1px solid #E9EBF7;
+    border: 1px solid #e9ebf7;
     border-radius: 20px;
     background: #fff;
     z-index: 10; }
@@ -715,10 +715,10 @@ body.lock {
 .card-projects {
   position: relative;
   padding: 20px;
-  border: 1px solid #E9EBF7;
+  border: 1px solid #e9ebf7;
   border-bottom: none; }
   .card-projects:last-child {
-    border-bottom: 1px solid #E9EBF7; }
+    border-bottom: 1px solid #e9ebf7; }
   .card-projects__row {
     display: grid;
     grid-template-columns: 0.6fr auto 0.6fr 0.6fr 1fr -webkit-min-content;
@@ -758,23 +758,27 @@ body.lock {
       margin-bottom: 10px; }
   .card-projects__option-name {
     display: block;
-    color: #8087A7;
+    color: #8087a7;
     margin-right: 5px; }
   .card-projects__option-value {
     display: block;
-    color: #8087A7; }
+    color: #8087a7; }
     .card-projects__option-value span.--green {
-      color: #51AF92; }
+      color: #51af92; }
     .card-projects__option-value span.--red {
-      color: #AF5151; }
+      color: #af5151; }
   .card-projects__enable {
     cursor: pointer; }
     .card-projects__enable.--disabled svg path {
-      fill: #AF5151; }
+      fill: #af5151; }
   .card-projects__setting {
     position: absolute;
     right: 15px;
     top: 15px; }
+  .card-projects.disabled .card-projects__enable svg {
+    fill: #af5151; }
+    .card-projects.disabled .card-projects__enable svg path {
+      fill: #af5151; }
 
 .setting__icon {
   cursor: pointer; }
@@ -787,7 +791,7 @@ body.lock {
   top: 100%;
   right: 0;
   padding: 15px;
-  border: 1px solid #E9EBF7;
+  border: 1px solid #e9ebf7;
   font-size: 14px;
   line-height: 120%;
   color: #000;
@@ -813,7 +817,7 @@ body.lock {
     color: #000; }
   .setting__item:hover {
     color: #fff;
-    background: #51AF92; }
+    background: #51af92; }
 
 @media (max-width: 1900px) {
   .card-projects__row {
